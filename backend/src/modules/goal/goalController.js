@@ -11,13 +11,13 @@ function createGoalController({
 }) {
   function listGoals(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, data);
+    const user = findCurrentUser(req, loadData);
     res.json(getUserGoals(data, user));
   }
 
   function createGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, data);
+    const user = findCurrentUser(req, loadData);
     const userId = getUserId(user);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -42,7 +42,7 @@ function createGoalController({
 
   function updateGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, data);
+    const user = findCurrentUser(req, loadData);
     const { id } = req.params;
     data.goals = data.goals || [];
     const index = data.goals.findIndex((goal) => goal.id === id && hasUserOwner(goal, user));
@@ -71,7 +71,7 @@ function createGoalController({
 
   function deleteGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, data);
+    const user = findCurrentUser(req, loadData);
     const { id } = req.params;
     data.goals = data.goals || [];
     const updated = data.goals.filter((goal) => !(goal.id === id && hasUserOwner(goal, user)));
