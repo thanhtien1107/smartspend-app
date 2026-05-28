@@ -1,0 +1,135 @@
+
+> smartspend-app@1.0.0 dev
+> vite --host 0.0.0.0 --host 0.0.0.0
+
+
+  [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m586[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.22.48.1:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://10.60.231.173:[1m5173[22m/[39m
+[2m10:34:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/ReportView.vue[22m
+[2m10:34:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m10:38:22[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/budget.js[22m
+[2m10:38:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mstores/useAppStore.js[22m
+[2m10:39:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue[22m
+[2m10:39:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue[22m
+[2m10:40:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m10:46:24[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue[22m
+[2m10:46:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m11:03:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:03:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:22:12[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:23:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:23:40[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:23:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:24:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m11:24:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m11:25:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m12:41:19[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:41:42[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:42:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:42:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:43:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:43:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue?vue&type=style&index=0&scoped=189d72fe&lang.css[22m
+[2m12:53:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:54:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m12:57:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m12:58:02[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m12:59:02[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m12:59:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m12:59:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m13:00:57[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m13:07:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m13:08:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m13:08:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m13:14:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m14:48:05[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m14:48:05[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m14:48:05[22m [36m[1m[vite][22m[39m server restarted.
+[2m14:48:07[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m14:48:07[22m [36m[1m[vite][22m[39m server restarted.
+[2m14:48:21[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m14:48:21[22m [36m[1m[vite][22m[39m server restarted.
+[2m15:13:17[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m15:13:17[22m [36m[1m[vite][22m[39m server restarted.
+[2m15:14:23[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m15:14:39[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m15:14:39[22m [36m[1m[vite][22m[39m server restarted.
+[2m15:15:09[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m15:15:09[22m [36m[1m[vite][22m[39m server restarted.
+[2m15:17:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m15:17:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m15:18:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m15:18:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:00:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:00:18[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:53[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:01:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:02:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:02:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:23:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m21:23:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m21:25:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:27:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:27:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:32:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:43:27[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:43:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:47:12[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:56:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/api.js[22m
+[2m21:56:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/expense.js[22m
+[2m21:56:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/budget.js[22m
+[2m21:56:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/category.js[22m
+[2m21:56:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AIView.vue[22m
+[2m21:56:56[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m21:57:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:57:22[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:57:40[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:57:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:57:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m21:58:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m21:59:20[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m21:59:27[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m21:59:27[22m [36m[1m[vite][22m[39m server restarted.
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.22.48.1:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.10:[1m5173[22m/[39m
+[2m21:59:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m22:00:04[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m22:00:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m22:00:30[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m22:05:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m22:09:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mservices/api.js[22m
+[2m22:09:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m22:10:40[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m22:11:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/components/Auth.vue[22m
+[2m23:01:27[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue, /views/AddView.vue[22m
+[2m23:02:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:02:22[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:02:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:02:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:03:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:03:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:04:11[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:04:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:04:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:05:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/AddView.vue[22m
+[2m23:05:19[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:06:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:06:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:06:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:07:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:07:15[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/HomeView.vue[22m
+[2m23:07:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/assets/main.css[22m
+[2m23:08:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue, /views/HomeView.vue, /views/AddView.vue, /views/ReportView.vue[22m
+[2m23:08:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue, /views/HomeView.vue, /views/AddView.vue, /views/ReportView.vue[22m
+[2m23:08:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/views/BudgetView.vue, /views/HomeView.vue, /views/AddView.vue, /views/ReportView.vue[22m

@@ -1,0 +1,384 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "username": "admin",
+      "password": "admin456",
+      "token": "afdecc9a-cd77-4f3c-bb6b-a0b592ed332b"
+    },
+    {
+      "id": "9c1e4bb5-366a-4124-8ccf-d38760ae7008",
+      "username": "admin1",
+      "password": "admin123"
+    },
+    {
+      "id": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "username": "thanhtien",
+      "password": "thanhtien1",
+      "token": "f4da3efe-ca90-46d6-a8fd-7755cfb29386"
+    },
+    {
+      "id": "43c1841e-2b6d-49f5-97be-41113e08fdf4",
+      "username": "zvzxvzxv@gmail.com",
+      "password": "vxvcvx",
+      "fullName": "tien",
+      "email": "zvzxvzxv@gmail.com",
+      "birthday": "2022-12-04",
+      "gender": "Nam",
+      "phone": "",
+      "avatar": "assets/images/male.png",
+      "wallet": 0,
+      "createdAt": "2026-05-19T16:11:37.226Z",
+      "token": "8d066543-9543-4abf-a75c-f19186a1457c"
+    },
+    {
+      "id": "c7998931-5ca1-4525-8329-b2f35ef3a57f",
+      "username": "zvzxvzxvd@gmail.com",
+      "password": "vxvcvx",
+      "fullName": "tien1",
+      "email": "zvzxvzxvd@gmail.com",
+      "birthday": "2022-12-04",
+      "gender": "Nam",
+      "phone": "",
+      "avatar": "assets/images/male.png",
+      "wallet": 0,
+      "createdAt": "2026-05-19T16:13:25.310Z",
+      "token": "6bf56151-9faf-4ca4-86bc-c5320f2d2d12"
+    },
+    {
+      "id": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "username": "thanhtien@gmail.com",
+      "password": "thanhtien1",
+      "fullName": "mmmm",
+      "email": "thanhtien@gmail.com",
+      "birthday": "2022-12-04",
+      "phone": "",
+      "avatar": "assets/images/male.png",
+      "wallet": 0,
+      "createdAt": "2026-05-20T18:26:42.287Z",
+      "token": "ec6e3c2e-dd71-41bf-a734-a77771b80c72"
+    },
+    {
+      "id": "1fee301b-b7de-4256-a5a2-e8c170cbe279",
+      "username": "n.thanhtien.1107@gmail.com",
+      "password": "",
+      "fullName": "Tiến Nguyễn Thành",
+      "email": "n.thanhtien.1107@gmail.com",
+      "birthday": "",
+      "phone": "",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJTBDCQi-jpsLF4il1nQ6q7zeLsV_d_kSy5WplyXjHgw2QZOQ=s96-c",
+      "wallet": 0,
+      "authProvider": "google",
+      "providerId": "115359654559195113974",
+      "createdAt": "2026-05-26T03:20:38.439Z",
+      "token": "2cbdfe8a-7aa0-46e8-8fd8-e27c5d247754",
+      "updatedAt": "2026-05-28T02:48:19.812Z"
+    },
+    {
+      "id": "f1103bf3-8c95-449e-b557-6073bf2942d2",
+      "username": "buigiahuy10505@gmail.com",
+      "password": "",
+      "fullName": "Huy Gia",
+      "email": "buigiahuy10505@gmail.com",
+      "birthday": "",
+      "phone": "",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJFQJqegfUEd6T5lx9X-eziZCrTmGooe0ySa9G2d8503AcHw0fk=s96-c",
+      "wallet": 0,
+      "authProvider": "google",
+      "providerId": "107077814613969149930",
+      "createdAt": "2026-05-26T04:04:55.295Z",
+      "token": "e970de88-a323-4a94-8e2f-af14262f7f05",
+      "updatedAt": "2026-05-26T04:11:21.718Z"
+    },
+    {
+      "id": "742a1dbc-60e7-4324-9d54-30ff94ecbd9e",
+      "username": "nguyenthanhtien25012010@gmail.com",
+      "password": "",
+      "fullName": "Nguyễn Thành Tiến",
+      "email": "nguyenthanhtien25012010@gmail.com",
+      "birthday": "",
+      "phone": "",
+      "avatar": "https://scontent.fsgn21-1.fna.fbcdn.net/v/t1.30497-1/84628273_176159830277856_972693363922829312_n.jpg?stp=c379.0.1290.1290a_dst-jpg_s200x200_tt6&_nc_cat=1&ccb=1-7&_nc_sid=7565cd&_nc_eui2=AeFAUHGUuiyP0KBUuUqj6vRBik--Qfnh2B6KT75B-eHYHpDWcwxmf6z4vUixnHeQNzWhelfLO05iievU3NkohmfY&_nc_ohc=j8wp9yFjifgQ7kNvwEHXyTN&_nc_oc=AdqotopE_Von8dPZfpTkZdGE2qiFWadYppa7BQwDqPgzJYQlxtBRocUiPijzCJqfeFLvhtdXnqBpOyNzE7aOV-Je&_nc_zt=24&_nc_ht=scontent.fsgn21-1.fna&edm=AP4hL3IEAAAA&oh=00_Af53bXO2tSsiuQliDRqfhpuwtS-oFo2bWGbIKdzpyYqwnw&oe=6A3E7BD9",
+      "wallet": 0,
+      "authProvider": "facebook",
+      "providerId": "1632131021350179",
+      "createdAt": "2026-05-26T15:33:22.501Z",
+      "token": "39467db7-a355-48f2-a0bd-741090b60ecd",
+      "updatedAt": "2026-05-27T16:53:18.266Z"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "de693ab7-fd22-4d18-96f8-2f946e23e5ac",
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "amount": 5000000,
+      "period": "Tháng",
+      "createdAt": "2026-05-26T06:43:24.532Z",
+      "updatedAt": "2026-05-28T02:13:25.533Z"
+    },
+    {
+      "userId": "user-1",
+      "amount": 100000000,
+      "period": "Tháng"
+    },
+    {
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "amount": 10000000,
+      "period": "Tuần"
+    }
+  ],
+  "categoryBudgets": [
+    {
+      "userId": "user-1",
+      "id": "cat-budget-1",
+      "category": "Food",
+      "amount": 4000000,
+      "period": "Tháng",
+      "createdAt": "2026-05-01T08:00:00.000Z"
+    }
+  ],
+  "expenses": [
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "afd1cbc5-168b-4459-ba15-d81981345111",
+      "type": "income",
+      "title": "lương cuối tháng",
+      "amount": 5000000,
+      "category": "Lương",
+      "date": "2026-05-28",
+      "time": "09:18",
+      "note": "lương cuối tháng",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "7691b5f1-7214-419e-bef4-173ddaeea233",
+      "type": "expense",
+      "title": "ăn trưa",
+      "amount": 50000,
+      "category": "Ăn uống",
+      "date": "2026-05-27",
+      "time": "23:51",
+      "note": "ăn trưa",
+      "location": "Đường N 4, Chánh Hiệp, Hồ Chí Minh, Việt Nam",
+      "friends": "nhung",
+      "imageUrl": ""
+    },
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "69175602-1ac7-4ed8-903a-fe6c29950cf0",
+      "title": "được sếp thường",
+      "amount": 300000,
+      "category": "Lương",
+      "date": "2026-05-27",
+      "time": "11:10",
+      "note": "được sếp thường",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "f7656d3b-d6fc-4fbf-89e1-8f54bc7650b0",
+      "title": "đi cafe với bạn",
+      "amount": 25000,
+      "category": "Ăn uống",
+      "date": "2026-05-26",
+      "time": "13:44",
+      "note": "đi cafe với bạn",
+      "location": "cafe",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "7e1c4aeb-4312-4ad3-aa1f-45e5fd3071d2",
+      "title": "phở",
+      "amount": 30000,
+      "category": "Ăn uống",
+      "date": "2026-05-26",
+      "time": "13:43",
+      "note": "",
+      "location": "phở",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "id": "fe51f113-d196-4ac1-bbd2-567b168081b3",
+      "title": "ăn sáng",
+      "amount": 15000,
+      "category": "Ăn uống",
+      "date": "2026-05-23",
+      "time": "22:05",
+      "note": "ăn sáng",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "id": "59abe6c3-4def-416f-a58c-e78f8f49ef66",
+      "title": "Chi tiêu Ăn uống",
+      "amount": 35000,
+      "category": "Ăn uống",
+      "date": "2026-05-23",
+      "time": "22:05",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "user-1",
+      "id": "b6d3f5b4-75b3-4cbf-879b-5bd5ba4cd945",
+      "title": "Ăn sáng",
+      "amount": 30000,
+      "category": "Food",
+      "date": "2026-05-19",
+      "note": "Đi ăn với bạn"
+    },
+    {
+      "userId": "user-1",
+      "id": "1dcb6dc7-ff08-406a-8d99-dafe27900bf6",
+      "title": "ăn trưa",
+      "amount": 15000,
+      "category": "Food",
+      "date": "2026-05-19",
+      "note": "buffet"
+    },
+    {
+      "userId": "user-1",
+      "id": "5707f132-7272-4b54-b028-72f28b4112a7",
+      "title": "Ăn sáng",
+      "amount": 15000,
+      "category": "Food",
+      "date": "2026-05-15",
+      "note": "đi án bánh mì"
+    },
+    {
+      "userId": "user-1",
+      "id": "b1f79187-1e27-4bb5-afe7-4d846e64e3d0",
+      "title": "ăn trưa",
+      "amount": 50000,
+      "category": "Food",
+      "date": "2026-05-14",
+      "note": "Đii ăn ở kí túc xa với bạn"
+    },
+    {
+      "userId": "user-1",
+      "id": "1",
+      "title": "Ăn tối",
+      "amount": 85000,
+      "category": "Food",
+      "date": "2026-05-15",
+      "note": "Ăn tối cùng người yêu"
+    },
+    {
+      "userId": "user-1",
+      "id": "2",
+      "title": "Đi lại",
+      "amount": 45000,
+      "category": "Transport",
+      "date": "2026-05-08",
+      "note": "Grab về nhà"
+    }
+  ],
+  "goals": [
+    {
+      "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
+      "id": "caeb283a-6b96-457b-9359-99a5ba74bb08",
+      "name": "mua đồ hello kitty",
+      "target": 500000,
+      "createdAt": "2026-05-28T02:19:46.732Z"
+    },
+    {
+      "id": "bb75461d-500a-4f06-a165-bdfe07f4e5d2",
+      "name": "mua vàng",
+      "target": 5000000,
+      "createdAt": "2026-05-21T17:52:53.426Z",
+      "updatedAt": "2026-05-26T04:00:14.440Z"
+    },
+    {
+      "id": "a8c983eb-e890-4e9d-bf70-99163d3b6796",
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "name": "mua sách",
+      "target": 5000000,
+      "createdAt": "2026-05-19T16:34:10.898Z"
+    },
+    {
+      "id": "4f3e9ffa-9974-4940-a803-d2d06d139f34",
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "name": "mua máy tính mới",
+      "target": 100000000,
+      "createdAt": "2026-05-19T16:33:03.699Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "bdea524b-1ac5-4857-94b5-8c4b0fe38edf",
+      "name": "mua túi",
+      "target": 6000000,
+      "createdAt": "2026-05-14T05:18:02.010Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "fdd7bdff-6e7b-4e49-87bd-c3d56462eaf4",
+      "name": "mua đồ hello kitty",
+      "target": 400000,
+      "createdAt": "2026-05-14T05:17:48.249Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "a247b1ee-2009-43cd-a537-911df5acf91c",
+      "name": "mua sách",
+      "target": 40000,
+      "createdAt": "2026-05-14T05:17:31.416Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "e3802580-283c-4333-b7a3-83584324d621",
+      "name": "mua máy tính mới",
+      "target": 5000000,
+      "createdAt": "2026-05-14T02:38:18.842Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "f4bd97c8-b7f1-4a35-8d87-f8a7da1ef862",
+      "name": "mua laptop",
+      "target": 5900000,
+      "createdAt": "2026-05-14T02:34:06.028Z"
+    },
+    {
+      "userId": "user-1",
+      "id": "goal-1",
+      "name": "Mua tai nghe mới",
+      "target": 2000000,
+      "createdAt": "2026-05-01T08:00:00.000Z"
+    }
+  ],
+  "categories": [
+    "Ăn uống",
+    "Sinh hoạt",
+    "Quần áo",
+    "Mỹ phẩm",
+    "Giao lưu",
+    "Y tế",
+    "Giáo dục",
+    "Điện nước",
+    "Đi lại",
+    "Liên lạc",
+    "Nhà cửa",
+    "Giải trí",
+    "Mua sắm",
+    "Sức khỏe",
+    "Đầu tư",
+    "Quà tặng & Quyên góp",
+    "Dịch vụ trực tuyến",
+    "Chi phí khác",
+    "Khác"
+  ],
+  "budget": {
+    "amount": 1000000,
+    "period": "Tuần"
+  }
+}
