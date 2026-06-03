@@ -9,6 +9,7 @@ const {
   createJsonDataRepository,
 } = require("./src/repositories/jsonDataRepository");
 const { getUserFromToken } = require("./src/utils/authUtils");
+const { createEmailService } = require("./src/utils/emailService");
 const {
   createServerCacheKey,
   fetchWithServerCache,
@@ -42,10 +43,14 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 const FACEBOOK_GRAPH_VERSION = process.env.FACEBOOK_GRAPH_VERSION || "v20.0";
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 const PORT = process.env.PORT || 4000;
 const DB_FILE = path.join(__dirname, "data", "db.json");
 const FRONTEND_PUBLIC_DIR = path.join(__dirname, "..", "frontend", "public");
 const { loadData, saveData } = createJsonDataRepository(DB_FILE);
+
+const emailService = createEmailService({ gmailUser: GMAIL_USER, gmailAppPassword: GMAIL_APP_PASSWORD });
 
 const recoveryCodes = new Map();
 const loginRateLimits = new Map();
@@ -133,6 +138,7 @@ const dependencies = {
   loginRateLimits,
   facebookOAuthStates,
   recoveryCodes,
+  emailService,
   findSimilarExpense: require("./src/utils/financialUtils").findSimilarExpense,
   detectUnusualExpense: require("./src/utils/financialUtils")
     .detectUnusualExpense,
@@ -144,6 +150,8 @@ const dependencies = {
     FACEBOOK_APP_ID,
     FACEBOOK_APP_SECRET,
     FACEBOOK_GRAPH_VERSION,
+    GMAIL_USER,
+    GMAIL_APP_PASSWORD,
     PUBLIC_APP_URL: process.env.PUBLIC_APP_URL,
     FRONTEND_URL: process.env.FRONTEND_URL,
     VITE_FRONTEND_URL: process.env.VITE_FRONTEND_URL,

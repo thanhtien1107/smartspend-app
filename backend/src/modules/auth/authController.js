@@ -22,6 +22,7 @@ function createAuthController(dependencies) {
     loginRateLimits,
     facebookOAuthStates,
     recoveryCodes,
+    emailService,
     env,
   } = dependencies;
 
@@ -342,7 +343,7 @@ function createAuthController(dependencies) {
       });
     },
 
-    passwordRecoveryRequest(req, res) {
+    async passwordRecoveryRequest(req, res) {
       const { username, channel = "gmail" } = req.body;
       const data = loadData();
       const user = findUserByLogin(data, username);
@@ -367,11 +368,36 @@ function createAuthController(dependencies) {
         verified: false,
         expiresAt: Date.now() + 10 * 60 * 1000,
       });
-      res.json({
+
+      // Attempt to send OTP via email
+      const recipientEmail = user.email || normalizedLogin;
+      let emailResult = { success: false, devMode: true };
+      if (emailService && typeof emailService.sendOtpEmail === 'function') {
+        try {
+          emailResult = await emailService.sendOtpEmail(recipientEmail, code);
+        } catch (emailErr) {
+          console.error('[passwordRecoveryRequest] emailService error:', emailErr.message);
+          emailResult = { success: false, devMode: false, error: emailErr.message };
+        }
+      }
+
+      const responsePayload = {
         success: true,
-        message: `Mã xác minh đã được gửi qua ${channel === "facebook" ? "Facebook" : "Gmail"}.`,
-        devCode: code,
-      });
+        message: emailResult.devMode
+          ? `Mã xác minh đã được tạo (chế độ dev).`
+          : emailResult.success
+            ? `Mã xác minh đã được gửi đến Gmail ${recipientEmail}.`
+            : `Gửi email thất bại, nhưng mã đã được tạo (chế độ dev).`,
+      };
+
+      // Only expose devCode outside production (for development/testing)
+      const isProduction = process.env.NODE_ENV === 'production';
+      const gmailConfigured = emailService && emailService.isConfigured && emailService.isConfigured();
+      if (!isProduction || !gmailConfigured) {
+        responsePayload.devCode = code;
+      }
+
+      return res.json(responsePayload);
     },
 
     passwordRecoveryVerify(req, res) {
