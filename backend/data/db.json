@@ -9,7 +9,8 @@
     {
       "id": "9c1e4bb5-366a-4124-8ccf-d38760ae7008",
       "username": "admin1",
-      "password": "admin123"
+      "password": "admin123",
+      "token": "1546fdc8-9e1d-483e-829d-7a42afff71d3"
     },
     {
       "id": "aea9332c-22f3-4d3f-b71d-080455dad66e",
@@ -48,7 +49,7 @@
     {
       "id": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
       "username": "thanhtien@gmail.com",
-      "password": "thanhtien1",
+      "password": "newtest123",
       "fullName": "mmmm",
       "email": "thanhtien@gmail.com",
       "birthday": "2022-12-04",
@@ -56,7 +57,7 @@
       "avatar": "assets/images/male.png",
       "wallet": 0,
       "createdAt": "2026-05-20T18:26:42.287Z",
-      "token": "54bf6b04-7652-4203-a058-709de8383de3"
+      "token": ""
     },
     {
       "id": "1fee301b-b7de-4256-a5a2-e8c170cbe279",
@@ -105,9 +106,43 @@
       "createdAt": "2026-05-26T15:33:22.501Z",
       "token": "39467db7-a355-48f2-a0bd-741090b60ecd",
       "updatedAt": "2026-05-27T16:53:18.266Z"
+    },
+    {
+      "id": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "username": "k@k",
+      "password": "123",
+      "fullName": "KKK",
+      "email": "k@k",
+      "birthday": "2022-12-04",
+      "phone": "",
+      "avatar": "assets/images/male.png",
+      "wallet": 0,
+      "createdAt": "2026-05-28T10:33:14.343Z",
+      "token": "c184d4e0-b4bc-4987-8027-3658a8a177a6"
+    },
+    {
+      "id": "b9ba354a-34f5-4f77-852a-49686a22d6ce",
+      "username": "agnthnguyen@gmail.com",
+      "password": "123456",
+      "fullName": "Nguyen",
+      "email": "agnthnguyen@gmail.com",
+      "birthday": "2022-12-04",
+      "phone": "",
+      "avatar": "assets/images/male.png",
+      "wallet": 0,
+      "createdAt": "2026-06-03T10:06:27.682Z",
+      "token": "01f93cbe-5c1c-4180-9018-d973ab7e1134"
     }
   ],
   "budgets": [
+    {
+      "id": "77d4cf0a-cffa-48fa-ba13-189955cf8d82",
+      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "amount": 100000,
+      "period": "Tháng",
+      "createdAt": "2026-05-28T10:34:41.769Z",
+      "updatedAt": "2026-05-28T11:00:12.566Z"
+    },
     {
       "id": "de693ab7-fd22-4d18-96f8-2f946e23e5ac",
       "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
@@ -138,6 +173,48 @@
     }
   ],
   "expenses": [
+    {
+      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "id": "0df3f178-ba36-47e9-86b7-19a3363a7782",
+      "type": "expense",
+      "title": "Mèo",
+      "amount": 1233,
+      "category": "Giải trí",
+      "date": "2026-05-28",
+      "time": "",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "id": "8bfbf71c-a34a-41f0-b225-529708c0f255",
+      "type": "expense",
+      "title": "Ăn sáng",
+      "amount": 90,
+      "category": "Ăn uống",
+      "date": "2026-05-28",
+      "time": "",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "id": "364b7a15-5133-4214-97e9-f4c245530145",
+      "type": "expense",
+      "title": "Trốn nợ",
+      "amount": 122,
+      "category": "Mỹ phẩm",
+      "date": "0132-12-03",
+      "time": "",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
     {
       "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
       "id": "afd1cbc5-168b-4459-ba15-d81981345111",
@@ -285,6 +362,13 @@
     }
   ],
   "goals": [
+    {
+      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
+      "id": "0b7a2d92-ab68-4178-ba69-9b24925cb275",
+      "name": "AL",
+      "target": 4000,
+      "createdAt": "2026-05-28T10:34:56.652Z"
+    },
     {
       "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
       "id": "caeb283a-6b96-457b-9359-99a5ba74bb08",

@@ -1,0 +1,116 @@
+
+> smartspend-app@1.0.0 start
+> node backend/server.js
+
+
+MONGO_URI is not configured. Server will continue using the current JSON storage until APIs are migrated.
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at getBudget (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:13:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listGoals (D:\CSE\ktpm\smartspend-app\backend\src\modules\goal\goalController.js:14:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listCategoryBudgets (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:50:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at getBudget (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:13:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listGoals (D:\CSE\ktpm\smartspend-app\backend\src\modules\goal\goalController.js:14:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listCategoryBudgets (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:50:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at saveBudget (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:19:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at getBudget (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:13:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listGoals (D:\CSE\ktpm\smartspend-app\backend\src\modules\goal\goalController.js:14:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)
+TypeError: loadData is not a function
+    at getUserFromToken (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:16:16)
+    at findCurrentUser (D:\CSE\ktpm\smartspend-app\backend\src\utils\authUtils.js:93:21)
+    at listCategoryBudgets (D:\CSE\ktpm\smartspend-app\backend\src\modules\budget\budgetController.js:50:18)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\layer.js:95:5)
+    at D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\CSE\ktpm\smartspend-app\node_modules\express\lib\router\index.js:280:10)

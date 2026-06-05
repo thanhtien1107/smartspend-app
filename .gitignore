@@ -1,3 +1,5 @@
 node_modules/
 .env
 
+doc/
+backend/config/db.js
