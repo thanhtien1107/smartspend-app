@@ -24,6 +24,23 @@ enum ResetChannel {
   FACEBOOK
 }
 
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
+
+enum NotificationType {
+  BUDGET_OVERSPENDING
+  DEBT_CARRYOVER
+  SYSTEM
+}
+
+enum ReportFormat {
+  PDF
+  EXCEL
+  CSV
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -45,6 +62,9 @@ model User {
   categoryBudgets CategoryBudget[]
   goals           Goal[]
   passwordResets  PasswordReset[]
+  notifications   Notification[]
+  debtCarryovers  DebtCarryover[]
+  reportExports   ReportExport[]
 
   @@index([email])
   @@index([sessionToken])
@@ -71,10 +91,15 @@ model Expense {
   id         String   @id @default(cuid())
   userId     String
   categoryId String?
+  type       TransactionType @default(EXPENSE)
   title      String
   amount     Decimal  @db.Decimal(14, 2)
   date       DateTime @default(now())
+  time       String?
   note       String?
+  location   String?
+  friends    String?
+  imageUrl   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -144,4 +169,59 @@ model PasswordReset {
 
   @@index([email])
   @@index([expiresAt])
+}
+
+
+model DebtCarryover {
+  id                      String   @id @default(cuid())
+  userId                  String
+  periodKey               String
+  periodLabel             String
+  baseBudgetAmount        Decimal  @db.Decimal(14, 2)
+  periodIncome            Decimal  @default(0) @db.Decimal(14, 2)
+  periodExpense           Decimal  @default(0) @db.Decimal(14, 2)
+  grossBudget             Decimal  @db.Decimal(14, 2)
+  carriedDebtFromPrevious Decimal  @default(0) @db.Decimal(14, 2)
+  availableBudget         Decimal  @db.Decimal(14, 2)
+  debtToCarryNextPeriod   Decimal  @default(0) @db.Decimal(14, 2)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, periodKey])
+  @@index([userId, periodKey])
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  userId     String
+  type       NotificationType @default(SYSTEM)
+  title      String
+  message    String
+  priority   String           @default("medium")
+  read       Boolean          @default(false)
+  periodKey  String?
+  debtAmount Decimal?         @db.Decimal(14, 2)
+  createdAt  DateTime         @default(now())
+  readAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read, createdAt])
+  @@index([periodKey])
+}
+
+model ReportExport {
+  id        String       @id @default(cuid())
+  userId    String
+  format    ReportFormat
+  fileName  String
+  periodKey String?
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([periodKey])
 }

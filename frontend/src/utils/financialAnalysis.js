@@ -22,6 +22,8 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
   const normalizedTransactions = expenses.map(normalizeExpense).filter((expense) => expense.amount > 0);
   const normalizedExpenses = normalizedTransactions.filter(isExpenseTransaction);
   const normalizedIncomes = normalizedTransactions.filter(isIncomeTransaction);
+  const debtCarryover = buildDebtCarryover(normalizedTransactions, budget, today);
+  const currentDebtPeriod = debtCarryover.current;
 
   const totalExpense = sumAmounts(normalizedExpenses);
   const totalIncome = sumAmounts(normalizedIncomes);
@@ -46,8 +48,10 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     : null;
   const monthlySpendingForecast = Math.round(averageDailySpending * daysInMonth);
   const baseBudgetAmount = Number(budget?.amount || 0);
-  const budgetAmount = getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome);
-  const budgetUsage = budgetAmount > 0 ? Math.round((monthlySpending / budgetAmount) * 100) : 0;
+  const debtCarriedFromPrevious = Number(currentDebtPeriod.carriedDebtFromPrevious || 0);
+  const budgetBeforeDebt = Number(baseBudgetAmount || 0) + Number(monthlyIncome || 0);
+  const budgetAmount = getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome, debtCarriedFromPrevious);
+  const budgetUsage = budgetAmount > 0 ? Math.round((monthlySpending / budgetAmount) * 100) : (monthlySpending > 0 ? 100 : 0);
   const budgetLevel = getBudgetLevel(budgetUsage);
   const categoryTotals = getCategoryTotals(monthlyExpenses);
   const topCategoryEntry = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
@@ -65,7 +69,8 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     abnormalDays,
     categorySpikes,
     monthlySpendingForecast,
-    budgetAmount
+    budgetAmount,
+    debtCarryover: currentDebtPeriod
   });
   const financialHealthScore = getFinancialHealthScore({
     budgetUsage,
@@ -89,7 +94,8 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     repeatedSmallTransactions,
     nightSpending,
     categorySpikes,
-    predictedDaysRemaining
+    predictedDaysRemaining,
+    debtCarryover: currentDebtPeriod
   });
   const recommendations = buildRecommendations({
     topCategoryEntry,
@@ -101,7 +107,8 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     nightSpending,
     predictedDaysRemaining,
     monthlySpending,
-    budgetAmount
+    budgetAmount,
+    debtCarryover: currentDebtPeriod
   });
   const insights = buildInsights({
     continuousIncreaseDays,
@@ -119,7 +126,16 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     budget_level: budgetLevel.key,
     budget_usage: budgetUsage,
     budget_amount: budgetAmount,
+    budget_before_debt: Math.round(budgetBeforeDebt),
     base_budget_amount: baseBudgetAmount,
+    debt_period_type: debtCarryover.periodType,
+    debt_period_key: currentDebtPeriod.periodKey,
+    debt_period_label: currentDebtPeriod.periodLabel,
+    debt_carried_from_previous: Math.round(debtCarriedFromPrevious),
+    available_budget_after_debt: Math.round(budgetAmount),
+    new_overspending_debt: Math.round(currentDebtPeriod.newOverspendingDebt || 0),
+    debt_to_carry_next_period: Math.round(currentDebtPeriod.debtToCarryNextPeriod || 0),
+    debt_history: debtCarryover.records,
     remaining_balance: Math.round(remainingBalance),
     total_expense: Math.round(totalExpense),
     total_income: Math.round(totalIncome),
@@ -230,8 +246,113 @@ function sumAmounts(expenses) {
   return expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
 }
 
-function getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome) {
-  return Number(baseBudgetAmount || 0) + Number(monthlyIncome || 0);
+function getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome, carriedDebt = 0) {
+  return Math.max(Number(baseBudgetAmount || 0) + Number(monthlyIncome || 0) - Number(carriedDebt || 0), 0);
+}
+
+function getBudgetPeriodType(budget = {}) {
+  const period = String(budget?.period || 'Tháng')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+  return period.includes('tuan') || period.includes('week') ? 'week' : 'month';
+}
+
+function getPeriodStart(date, periodType) {
+  const base = startOfDay(date);
+  if (periodType === 'week') return getWeekStart(base);
+  return new Date(base.getFullYear(), base.getMonth(), 1);
+}
+
+function getPeriodEnd(periodStart, periodType) {
+  if (periodType === 'week') {
+    const end = new Date(periodStart.getTime() + 6 * DAY_MS);
+    end.setHours(23, 59, 59, 999);
+    return end;
+  }
+  const end = new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 0);
+  end.setHours(23, 59, 59, 999);
+  return end;
+}
+
+function addPeriod(periodStart, periodType) {
+  if (periodType === 'week') return new Date(periodStart.getTime() + 7 * DAY_MS);
+  return new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 1);
+}
+
+function formatPeriodKey(periodStart, periodType) {
+  if (periodType === 'week') return `WEEK-${periodStart.toISOString().slice(0, 10)}`;
+  return `${periodStart.getFullYear()}-${String(periodStart.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function formatPeriodLabel(periodStart, periodType) {
+  if (periodType === 'week') {
+    const end = getPeriodEnd(periodStart, periodType);
+    return `Tuần ${periodStart.toLocaleDateString('vi-VN')} - ${end.toLocaleDateString('vi-VN')}`;
+  }
+  return `Tháng ${String(periodStart.getMonth() + 1).padStart(2, '0')}/${periodStart.getFullYear()}`;
+}
+
+function buildDebtCarryover(transactions = [], budget = {}, asOfDate = new Date()) {
+  const baseBudgetAmount = Math.max(Number(budget?.amount || 0), 0);
+  const periodType = getBudgetPeriodType(budget);
+  const currentPeriodStart = getPeriodStart(startOfDay(asOfDate), periodType);
+  const datedTransactions = transactions.filter((transaction) => transaction.dateObject);
+  const earliestDate = datedTransactions.length
+    ? datedTransactions.reduce((min, transaction) => transaction.dateObject < min ? transaction.dateObject : min, datedTransactions[0].dateObject)
+    : currentPeriodStart;
+  const firstPeriodStart = getPeriodStart(earliestDate, periodType);
+  const records = [];
+  let carriedDebt = 0;
+
+  for (let periodStart = new Date(firstPeriodStart); periodStart <= currentPeriodStart; periodStart = addPeriod(periodStart, periodType)) {
+    const periodEnd = getPeriodEnd(periodStart, periodType);
+    const periodTransactions = datedTransactions.filter((transaction) => transaction.dateObject >= periodStart && transaction.dateObject <= periodEnd);
+    const periodIncome = sumAmounts(periodTransactions.filter(isIncomeTransaction));
+    const periodExpense = sumAmounts(periodTransactions.filter(isExpenseTransaction));
+    const grossBudget = baseBudgetAmount + periodIncome;
+    const debtFromPrevious = carriedDebt;
+    const unpaidPreviousDebt = Math.max(debtFromPrevious - grossBudget, 0);
+    const availableBudget = Math.max(grossBudget - debtFromPrevious, 0);
+    const newOverspendingDebt = Math.max(periodExpense - availableBudget, 0);
+    const debtToCarryNextPeriod = unpaidPreviousDebt + newOverspendingDebt;
+    const usage = availableBudget > 0 ? Math.round((periodExpense / availableBudget) * 100) : (periodExpense > 0 ? 100 : 0);
+
+    records.push({
+      periodType,
+      periodKey: formatPeriodKey(periodStart, periodType),
+      periodLabel: formatPeriodLabel(periodStart, periodType),
+      periodStart: periodStart.toISOString().slice(0, 10),
+      periodEnd: periodEnd.toISOString().slice(0, 10),
+      baseBudgetAmount: Math.round(baseBudgetAmount),
+      periodIncome: Math.round(periodIncome),
+      periodExpense: Math.round(periodExpense),
+      grossBudget: Math.round(grossBudget),
+      carriedDebtFromPrevious: Math.round(debtFromPrevious),
+      availableBudget: Math.round(availableBudget),
+      unpaidPreviousDebt: Math.round(unpaidPreviousDebt),
+      newOverspendingDebt: Math.round(newOverspendingDebt),
+      debtToCarryNextPeriod: Math.round(debtToCarryNextPeriod),
+      usage,
+      status: debtToCarryNextPeriod > 0 ? 'Vượt ngân sách' : usage >= 70 ? 'Cảnh báo' : 'An toàn'
+    });
+    carriedDebt = debtToCarryNextPeriod;
+  }
+
+  return {
+    periodType,
+    records,
+    current: records[records.length - 1] || {
+      periodType,
+      periodKey: formatPeriodKey(currentPeriodStart, periodType),
+      periodLabel: formatPeriodLabel(currentPeriodStart, periodType),
+      carriedDebtFromPrevious: 0,
+      availableBudget: Math.round(baseBudgetAmount),
+      newOverspendingDebt: 0,
+      debtToCarryNextPeriod: 0,
+      usage: 0
+    }
+  };
 }
 
 function getBudgetLevel(usage) {
@@ -375,8 +496,23 @@ function buildAlerts(context) {
     repeatedSmallTransactions,
     nightSpending,
     categorySpikes,
-    predictedDaysRemaining
+    predictedDaysRemaining,
+    debtCarryover
   } = context;
+
+  if (debtCarryover?.debtToCarryNextPeriod > 0) {
+    alerts.push({
+      priority: 'critical',
+      message: `Khoản vượt ngân sách ${formatMoney(debtCarryover.debtToCarryNextPeriod)} sẽ được chuyển sang kỳ tiếp theo.`
+    });
+  }
+
+  if (debtCarryover?.carriedDebtFromPrevious > 0) {
+    alerts.push({
+      priority: 'high',
+      message: `Ngân sách kỳ này đã bị trừ ${formatMoney(debtCarryover.carriedDebtFromPrevious)} do nợ kỳ trước.`
+    });
+  }
 
   if (budgetAmount > 0 && budgetLevel.key === 'exceeded') {
     alerts.push({
@@ -432,9 +568,14 @@ function buildRecommendations(context) {
     nightSpending,
     predictedDaysRemaining,
     monthlySpending,
-    budgetAmount
+    budgetAmount,
+    debtCarryover
   } = context;
   const recommendations = [];
+
+  if (debtCarryover?.debtToCarryNextPeriod > 0) {
+    recommendations.push('Ưu tiên xử lý khoản nợ carry-over trước khi tăng chi tiêu ở kỳ tiếp theo.');
+  }
 
   if (topCategoryEntry) {
     const [category, amount] = topCategoryEntry;
@@ -466,8 +607,14 @@ function buildRecommendations(context) {
   return [...new Set(recommendations)].slice(0, 5);
 }
 
-function buildInsights({ continuousIncreaseDays, abnormalDays, repeatedSmallTransactions, nightSpending, categorySpikes, monthlySpendingForecast, budgetAmount }) {
+function buildInsights({ continuousIncreaseDays, abnormalDays, repeatedSmallTransactions, nightSpending, categorySpikes, monthlySpendingForecast, budgetAmount, debtCarryover }) {
   const insights = [];
+  if (debtCarryover?.carriedDebtFromPrevious > 0) {
+    insights.push(`Kỳ này đang gánh nợ kỳ trước ${formatMoney(debtCarryover.carriedDebtFromPrevious)}.`);
+  }
+  if (debtCarryover?.debtToCarryNextPeriod > 0) {
+    insights.push(`Nếu kết thúc kỳ hiện tại, ${formatMoney(debtCarryover.debtToCarryNextPeriod)} sẽ carry-over sang kỳ sau.`);
+  }
   if (continuousIncreaseDays >= 3) {
     insights.push(`Chi tiêu tăng liên tục ${continuousIncreaseDays} ngày.`);
   }

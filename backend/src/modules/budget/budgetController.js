@@ -10,13 +10,13 @@ function createBudgetController({
 }) {
   function getBudget(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     res.json(getUserBudget(data, user));
   }
 
   function saveBudget(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     const userId = getUserId(user);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -47,13 +47,13 @@ function createBudgetController({
 
   function listCategoryBudgets(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     res.json(getUserCategoryBudgets(data, user));
   }
 
   function saveCategoryBudget(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     const userId = getUserId(user);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });

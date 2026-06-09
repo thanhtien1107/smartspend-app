@@ -35,6 +35,14 @@
           <strong id="budget-usage">{{ finance.budget_usage }}%</strong>
         </div>
         <div class="card">
+          <span>Nợ kỳ trước</span>
+          <strong class="amount-expense">{{ formatMoney(finance.debt_carried_from_previous) }}</strong>
+        </div>
+        <div class="card">
+          <span>Nợ chuyển kỳ sau</span>
+          <strong class="amount-expense">{{ formatMoney(finance.debt_to_carry_next_period) }}</strong>
+        </div>
+        <div class="card">
           <span>Trạng thái</span>
           <strong id="budget-status">{{ finance.status }}</strong>
         </div>
@@ -55,6 +63,17 @@
             :style="{ width: `${progressWidth}%` }"
           ></span>
         </div>
+      </div>
+
+      <div class="debt-carryover-box compact-dashboard-debt">
+        <h3>Debt carry-over</h3>
+        <p>
+          Ngân sách trước nợ: <strong>{{ formatMoney(finance.budget_before_debt) }}</strong> ·
+          Khả dụng sau nợ: <strong>{{ formatMoney(finance.available_budget_after_debt) }}</strong>
+        </p>
+        <p v-if="finance.debt_to_carry_next_period > 0" class="amount-expense">
+          Cảnh báo: {{ formatMoney(finance.debt_to_carry_next_period) }} sẽ bị chuyển sang kỳ tiếp theo.
+        </p>
       </div>
 
       <form class="dashboard-controls transaction-search-form" @submit.prevent="searchTransactions">
@@ -113,6 +132,25 @@
           :class="`alert-${alert.priority}`"
         >
           {{ alert.message }}
+        </p>
+      </div>
+
+      <div
+        v-if="customerNotifications.length"
+        class="notification-box customer-notification-box"
+      >
+        <div class="notification-heading-row">
+          <strong>Thông báo cho khách hàng</strong>
+          <button type="button" class="btn-action" @click="markRead">
+            Đánh dấu đã đọc
+          </button>
+        </div>
+        <p
+          v-for="notification in customerNotifications"
+          :key="notification.id"
+          :class="`alert-${notification.priority || 'medium'}`"
+        >
+          {{ notification.message }}
         </p>
       </div>
 
@@ -300,6 +338,7 @@ import {
   validateExpenseData,
 } from "../utils/financialAnalysis";
 import { apiFetch } from "../services/api";
+import { fetchNotifications, markNotificationsRead } from "../services/notification";
 import { getCategoryIcon } from "../utils/categoryIcons";
 import { createCacheKey, fetchWithCache } from "../utils/cache";
 import { INCOME_CATEGORIES } from "../utils/transactionCategories";
@@ -328,6 +367,7 @@ const placeResults = ref([]);
 const placeSearched = ref(false);
 const placeCoordinates = ref(null);
 const placeRadiusOptions = [500, 1000, 2000, 5000, 10000, 25000, 50000];
+const customerNotifications = ref([]);
 
 const currentBudget = computed(() => budgets.value[0] || null);
 const finance = computed(() =>
@@ -459,11 +499,24 @@ onMounted(async () => {
       appStore.fetchGoals(),
       appStore.fetchCategories(),
     ]);
+    customerNotifications.value = await fetchNotifications();
   } catch (error) {
     console.error("Fetch dashboard data failed", error);
     expenseError.value = "Không thể tải dữ liệu Dashboard.";
   }
 });
+
+async function markRead() {
+  try {
+    await markNotificationsRead();
+    customerNotifications.value = customerNotifications.value.map((notification) => ({
+      ...notification,
+      read: true,
+    }));
+  } catch (error) {
+    console.error('Mark notifications read failed', error);
+  }
+}
 
 async function editExpense(expense) {
   expenseError.value = "";

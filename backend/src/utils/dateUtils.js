@@ -18,11 +18,7 @@ function getWeekStart(date) {
 }
 
 function sameDay(a, b) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 module.exports = {
@@ -30,5 +26,5 @@ module.exports = {
   startOfDay,
   parseExpenseDate,
   getWeekStart,
-  sameDay,
+  sameDay
 };

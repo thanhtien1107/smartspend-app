@@ -2915,3 +2915,43 @@ textarea:focus {
     grid-template-columns: minmax(86px, 120px) minmax(0, 1fr) 38px;
   }
 }
+
+
+/* Week 8: report export, debt carry-over, and budget notification UI */
+.report-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.debt-carryover-box {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fbfdfb;
+}
+
+.debt-carryover-box h3,
+.debt-carryover-box p {
+  margin: 0;
+}
+
+.compact-dashboard-debt {
+  margin-top: 12px;
+}
+
+.customer-notification-box {
+  display: grid;
+  gap: 8px;
+}
+
+.notification-heading-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
