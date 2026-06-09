@@ -18,6 +18,7 @@ function createAuthRoutes(dependencies) {
   router.get('/session', controller.session);
   router.get('/profile', controller.profileGet);
   router.put('/profile', controller.profilePut);
+  router.put('/profile/password', controller.changePassword);
   router.get('/oauth/config', controller.oauthConfig);
 
   return router;

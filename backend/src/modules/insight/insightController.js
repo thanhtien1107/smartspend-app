@@ -14,7 +14,7 @@ function createInsightController(dependencies) {
   return {
     getInsights(req, res) {
       const data = loadData();
-      const user = findCurrentUser(req, loadData);
+      const user = findCurrentUser(req, loadData, data);
       res.json(buildInsight(buildUserScopedData(data, user), user));
     },
   };

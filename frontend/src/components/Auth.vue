@@ -78,6 +78,17 @@
             <label>
               <input v-model="registerForm.birthday" type="date" />
             </label>
+            <label>
+              <input
+                v-model.trim="registerForm.inviteCode"
+                type="text"
+                inputmode="text"
+                maxlength="12"
+                placeholder="Mã mời (không bắt buộc)"
+                autocomplete="off"
+                @input="normalizeRegisterInviteCode"
+              />
+            </label>
             <label class="password-field">
               <input
                 v-model.trim="registerForm.password"
@@ -106,7 +117,7 @@
           </button>
         </form>
 
-        <div v-if="!isRegister" id="social-login-row" class="social-login">
+        <div id="social-login-row" class="social-login">
           <div class="auth-divider"><span>Hoặc tiếp tục với</span></div>
           <div class="social-buttons">
             <div ref="googleButtonSlot" class="google-signin-button"></div>
@@ -301,6 +312,7 @@ const registerForm = reactive({
   email: '',
   gender: 'Nam',
   birthday: '2022-12-04',
+  inviteCode: '',
   password: '',
   confirmPassword: ''
 });
@@ -353,6 +365,11 @@ const loginLocked = computed(() => loginCooldownRemaining.value > 0);
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 onMounted(() => {
+  const inviteCode = normalizeInviteCode(route.query.invite);
+  if (inviteCode) {
+    registerForm.inviteCode = inviteCode;
+    isRegister.value = true;
+  }
   if (consumeFacebookCallback()) return;
   initializeGoogleLogin().catch((error) => {
     console.error('Google Identity initialization error', error);
@@ -391,6 +408,18 @@ function toggleRegister() {
   isRegister.value = !isRegister.value;
   authView.value = 'main';
   setMessage('', 'info');
+}
+
+function normalizeInviteCode(value) {
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 12);
+}
+
+function normalizeRegisterInviteCode(event) {
+  registerForm.inviteCode = normalizeInviteCode(event?.target?.value);
 }
 
 // ── OTP helpers ───────────────────────────────────────────────────────────────
@@ -595,7 +624,8 @@ async function handleSubmit() {
         birthday: registerForm.birthday,
         gender: registerForm.gender,
         avatar,
-        wallet: 0
+        wallet: 0,
+        inviteCode: registerForm.inviteCode
       });
 
       if (!result.ok) {
@@ -668,7 +698,7 @@ async function handleSocialClick(provider) {
 
   if (provider === 'Facebook') {
     setMessage('Dang chuyen sang Facebook...', 'info');
-    startFacebookLogin();
+    startFacebookLogin(normalizeInviteCode(route.query.invite || registerForm.inviteCode));
   }
 }
 
@@ -706,7 +736,7 @@ function consumeFacebookCallback() {
 
 // ── Google Identity ───────────────────────────────────────────────────────────
 async function initializeGoogleLogin() {
-  if (isRegister.value || authView.value !== 'main') return;
+  if (authView.value !== 'main') return;
   await nextTick();
   if (!googleButtonSlot.value) return;
 
@@ -785,7 +815,10 @@ async function handleGoogleCredentialResponse(credentialResponse) {
   loading.value = true;
   setMessage('', 'info');
   try {
-    const result = await loginWithGoogleCredential(credentialResponse.credential);
+    const result = await loginWithGoogleCredential(
+      credentialResponse.credential,
+      normalizeInviteCode(route.query.invite || registerForm.inviteCode)
+    );
     if (!result.ok) {
       setMessage(result.data?.error || 'Đăng nhập bằng Google thất bại.', 'error');
       return;

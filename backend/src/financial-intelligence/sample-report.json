@@ -1,0 +1,46 @@
+{
+  "overallScore": 58,
+  "scoreBreakdown": {
+    "financialDiscipline": { "score": 9, "maxScore": 15, "percentage": 60, "deductions": 6, "evidence": ["Subscription count is high"] },
+    "budgetManagement": { "score": 8, "maxScore": 15, "percentage": 53, "deductions": 7, "evidence": ["Projected budget consumption is elevated"] },
+    "savingsAbility": { "score": 7, "maxScore": 15, "percentage": 47, "deductions": 8, "evidence": ["Savings rate is below target"] },
+    "spendingEfficiency": { "score": 8, "maxScore": 15, "percentage": 53, "deductions": 7, "evidence": ["Spending is concentrated in one category"] },
+    "riskManagement": { "score": 6, "maxScore": 10, "percentage": 60, "deductions": 4, "evidence": ["Cash runway is limited"] },
+    "goalAchievement": { "score": 7, "maxScore": 10, "percentage": 70, "deductions": 3, "evidence": ["Goal progress is behind plan"] },
+    "financialStability": { "score": 6, "maxScore": 10, "percentage": 60, "deductions": 4, "evidence": ["Projected cash flow is negative"] },
+    "behaviorConsistency": { "score": 7, "maxScore": 10, "percentage": 70, "deductions": 3, "evidence": ["Spending consistency is low"] }
+  },
+  "strengths": ["goalAchievement: 70%"],
+  "weaknesses": ["savingsAbility: 47%", "budgetManagement: 53%"],
+  "warnings": [
+    {
+      "id": "monthly-BUDGET-01-4-warning",
+      "type": "warning",
+      "severity": "critical",
+      "category": "budget",
+      "title": "Warning: budget usage",
+      "observation": "Budget consumption is elevated. Current value: 112%.",
+      "rootCause": "Spending is growing faster than the configured budget.",
+      "impact": "This increases the probability of negative cash flow.",
+      "recommendation": "Reduce the largest discretionary category and set a weekly cap.",
+      "period": "monthly",
+      "confidence": 0.91
+    }
+  ],
+  "insights": [],
+  "recommendations": [],
+  "forecasts": [],
+  "achievements": [],
+  "financialPersonality": "Lifestyle Spender",
+  "riskLevel": "high",
+  "period": "monthly",
+  "generatedAt": "2026-06-09T12:00:00.000Z",
+  "analyses": {},
+  "engine": {
+    "version": "1.0.0",
+    "mode": "rule-based",
+    "evaluatedRules": 120,
+    "triggeredRules": 31,
+    "confidence": 0.91
+  }
+}

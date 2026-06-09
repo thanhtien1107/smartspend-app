@@ -46,10 +46,10 @@ export async function fetchOAuthConfig() {
   return response.ok ? await response.json() : { googleClientId: '', facebookAppId: '' };
 }
 
-export async function loginWithGoogleCredential(credential) {
+export async function loginWithGoogleCredential(credential, inviteCode = '') {
   const response = await apiFetch('/api/social-login/google', {
     method: 'POST',
-    body: JSON.stringify({ credential })
+    body: JSON.stringify({ credential, inviteCode })
   });
   const data = await readJson(response);
   if (response.ok && data.token) localStorage.setItem('authToken', data.token);
@@ -57,8 +57,35 @@ export async function loginWithGoogleCredential(credential) {
   return { ok: response.ok, status: response.status, data };
 }
 
-export function startFacebookLogin() {
-  window.location.href = `${API_BASE}/api/auth/facebook`;
+export async function fetchProfile() {
+  const response = await apiFetch('/api/profile');
+  const data = await readJson(response);
+  if (!response.ok) console.error('Profile fetch failed', response.status, data);
+  return { ok: response.ok, status: response.status, data };
+}
+
+export async function updateProfile(payload) {
+  const response = await apiFetch('/api/profile', {
+    method: 'PUT',
+    body: JSON.stringify(payload)
+  });
+  const data = await readJson(response);
+  return { ok: response.ok, status: response.status, data };
+}
+
+export async function changePassword(currentPassword, newPassword) {
+  const response = await apiFetch('/api/profile/password', {
+    method: 'PUT',
+    body: JSON.stringify({ currentPassword, newPassword })
+  });
+  const data = await readJson(response);
+  return { ok: response.ok, status: response.status, data };
+}
+
+export function startFacebookLogin(inviteCode = '') {
+  const url = new URL(`${API_BASE}/api/auth/facebook`);
+  if (inviteCode) url.searchParams.set('invite', inviteCode);
+  window.location.href = url.toString();
 }
 
 /**

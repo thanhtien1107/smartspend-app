@@ -288,6 +288,140 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="editingExpenseId"
+      class="transaction-edit-overlay"
+      @click.self="cancelEditExpense"
+    >
+      <form
+        class="transaction-edit-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transaction-edit-title"
+        @keydown.esc="cancelEditExpense"
+        @submit.prevent="saveEditedExpense"
+      >
+        <div class="transaction-edit-heading">
+          <div>
+            <span>SmartSpend</span>
+            <h2 id="transaction-edit-title">Sửa giao dịch</h2>
+          </div>
+          <button
+            type="button"
+            class="transaction-edit-close"
+            aria-label="Đóng"
+            @click="cancelEditExpense"
+          >
+            ×
+          </button>
+        </div>
+
+        <p v-if="editExpenseError" class="notification-box expense-error">
+          {{ editExpenseError }}
+        </p>
+
+        <div class="transaction-edit-grid">
+          <label>
+            <span>Loại giao dịch</span>
+            <select v-model="editForm.type" @change="syncEditCategory">
+              <option value="expense">Chi tiêu</option>
+              <option value="income">Thu vào</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Tên giao dịch</span>
+            <input
+              v-model.trim="editForm.title"
+              type="text"
+              maxlength="120"
+              placeholder="Ví dụ: Ăn trưa"
+              required
+            />
+          </label>
+
+          <label>
+            <span>Số tiền</span>
+            <input
+              v-model.number="editForm.amount"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="1000000000"
+              required
+            />
+          </label>
+
+          <label>
+            <span>Danh mục</span>
+            <select v-model="editForm.category" required>
+              <option
+                v-for="category in editCategories"
+                :key="category"
+                :value="category"
+              >
+                {{ getCategoryIcon(category) }} {{ category }}
+              </option>
+            </select>
+          </label>
+
+          <label>
+            <span>Ngày</span>
+            <input v-model="editForm.date" type="date" :max="today" required />
+          </label>
+
+          <label>
+            <span>Giờ</span>
+            <input v-model="editForm.time" type="time" />
+          </label>
+
+          <label class="transaction-edit-wide">
+            <span>Ghi chú</span>
+            <textarea
+              v-model.trim="editForm.note"
+              rows="3"
+              maxlength="500"
+              placeholder="Mô tả thêm về giao dịch"
+            ></textarea>
+          </label>
+
+          <label>
+            <span>Địa điểm</span>
+            <input
+              v-model.trim="editForm.location"
+              type="text"
+              maxlength="200"
+              placeholder="Địa điểm giao dịch"
+            />
+          </label>
+
+          <label>
+            <span>Người tham gia</span>
+            <input
+              v-model.trim="editForm.friends"
+              type="text"
+              maxlength="200"
+              placeholder="Tên bạn bè hoặc người tham gia"
+            />
+          </label>
+        </div>
+
+        <div class="transaction-edit-actions">
+          <button
+            type="button"
+            class="secondary-btn"
+            :disabled="editSaving"
+            @click="cancelEditExpense"
+          >
+            Hủy
+          </button>
+          <button type="submit" class="primary-btn" :disabled="editSaving">
+            {{ editSaving ? "Đang lưu..." : "Lưu thay đổi" }}
+          </button>
+        </div>
+      </form>
+    </div>
   </section>
 </template>
 
@@ -302,12 +436,19 @@ import {
 import { apiFetch } from "../services/api";
 import { getCategoryIcon } from "../utils/categoryIcons";
 import { createCacheKey, fetchWithCache } from "../utils/cache";
-import { INCOME_CATEGORIES } from "../utils/transactionCategories";
+import {
+  EXPENSE_CATEGORIES,
+  INCOME_CATEGORIES,
+} from "../utils/transactionCategories";
 
 const appStore = useAppStore();
 const { expenses, budgets, categories, categoryBudgets, user } =
   storeToRefs(appStore);
 const expenseError = ref("");
+const editExpenseError = ref("");
+const editingExpenseId = ref("");
+const editSaving = ref(false);
+const editForm = ref(createEmptyEditForm());
 const searchText = ref("");
 const selectedCategory = ref("");
 const selectedDate = ref("");
@@ -354,6 +495,14 @@ const allCategories = computed(() => {
 });
 
 const incomeCategorySet = new Set(INCOME_CATEGORIES);
+const today = new Date().toISOString().slice(0, 10);
+const editCategories = computed(() =>
+  editForm.value.type === "income"
+    ? INCOME_CATEGORIES
+    : categories.value.length
+      ? categories.value
+      : EXPENSE_CATEGORIES,
+);
 
 function isIncomeTransaction(expense = {}) {
   return expense.type === "income" || (!expense.type && incomeCategorySet.has(expense.category));
@@ -465,32 +614,78 @@ onMounted(async () => {
   }
 });
 
-async function editExpense(expense) {
+function editExpense(expense) {
   expenseError.value = "";
-  const rawAmount = window.prompt(
-    "Nhập số tiền mới",
-    String(expense.amount || ""),
-  );
-  if (rawAmount === null) return;
-  const rawNote =
-    window.prompt("Nhập ghi chú mới", expense.note || "") ?? expense.note ?? "";
+  editExpenseError.value = "";
+  editingExpenseId.value = expense.id;
+  editForm.value = {
+    type: isIncomeTransaction(expense) ? "income" : "expense",
+    title: String(expense.title || ""),
+    amount: Number(expense.amount || 0),
+    category: String(expense.category || ""),
+    date: String(expense.date || "").slice(0, 10),
+    time: String(expense.time || ""),
+    note: String(expense.note || ""),
+    location: String(expense.location || ""),
+    friends: String(expense.friends || ""),
+  };
+  syncEditCategory();
+}
+
+function createEmptyEditForm() {
+  return {
+    type: "expense",
+    title: "",
+    amount: null,
+    category: "",
+    date: "",
+    time: "",
+    note: "",
+    location: "",
+    friends: "",
+  };
+}
+
+function syncEditCategory() {
+  const available = editCategories.value;
+  if (!available.includes(editForm.value.category)) {
+    editForm.value.category = available[0] || "";
+  }
+}
+
+function cancelEditExpense() {
+  if (editSaving.value) return;
+  editingExpenseId.value = "";
+  editExpenseError.value = "";
+  editForm.value = createEmptyEditForm();
+}
+
+async function saveEditedExpense() {
+  if (!editingExpenseId.value || editSaving.value) return;
+  editExpenseError.value = "";
   const payload = {
-    ...expense,
-    amount: Number(rawAmount),
-    note: rawNote,
+    ...editForm.value,
+    title: editForm.value.title.trim(),
+    amount: Number(editForm.value.amount),
   };
   const errors = validateExpenseData(payload);
+  if (!payload.title) errors.unshift("Tên giao dịch không được để trống.");
   if (errors.length) {
-    expenseError.value = errors[0];
+    editExpenseError.value = errors[0];
     return;
   }
 
+  editSaving.value = true;
   try {
-    await appStore.updateExpense(expense.id, payload);
+    await appStore.updateExpense(editingExpenseId.value, payload);
+    editingExpenseId.value = "";
+    editForm.value = createEmptyEditForm();
   } catch (error) {
     console.error("Update expense failed", error);
-    expenseError.value =
-      error?.message || error?.error || "Không thể sửa chi tiêu.";
+    editExpenseError.value =
+      error?.message || error?.error || "Không thể sửa giao dịch.";
+  } finally {
+    editSaving.value = false;
   }
 }
 
