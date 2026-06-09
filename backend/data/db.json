@@ -16,7 +16,9 @@
       "id": "aea9332c-22f3-4d3f-b71d-080455dad66e",
       "username": "thanhtien",
       "password": "thanhtien1",
-      "token": "f4da3efe-ca90-46d6-a8fd-7755cfb29386"
+      "token": "139bb980-8acc-45a3-8fad-f0ad957a6e06",
+      "inviteCode": "4C7D97FE",
+      "referralCount": 0
     },
     {
       "id": "43c1841e-2b6d-49f5-97be-41113e08fdf4",
@@ -173,6 +175,48 @@
     }
   ],
   "expenses": [
+    {
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "id": "f73d9e37-f61e-4f02-836b-6d08528a7cb3",
+      "type": "income",
+      "title": "đi làm phát tờ rơi",
+      "amount": 200000,
+      "category": "Làm thêm",
+      "date": "2026-06-09",
+      "time": "12:14",
+      "note": "đi làm phát tờ rơi",
+      "location": "Khu du lịch Đại Nam, 1765A QL13, Thủ Dầu Một, Hồ Chí Minh, Việt Nam",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "id": "a673d7c7-8760-430f-b9e3-234d7c4d63ba",
+      "type": "expense",
+      "title": "đi chơi ở khu du lịch",
+      "amount": 2000000,
+      "category": "Giải trí",
+      "date": "2026-06-09",
+      "time": "12:13",
+      "note": "đi chơi ở khu du lịch",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
+      "id": "21dd5b73-581a-45c6-85c0-681c3f65fbdd",
+      "type": "expense",
+      "title": "Chi tiêu Ăn uống",
+      "amount": 50000,
+      "category": "Ăn uống",
+      "date": "2026-06-09",
+      "time": "12:12",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
     {
       "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
       "id": "0df3f178-ba36-47e9-86b7-19a3363a7782",

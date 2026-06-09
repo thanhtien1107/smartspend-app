@@ -25,6 +25,9 @@ const { createGoalRoutes } = require("./src/modules/goal/goalRoutes");
 const { createAuthRoutes } = require("./src/modules/auth/authRoutes");
 const { createExpenseRoutes } = require("./src/modules/expense/expenseRoutes");
 const { createInsightRoutes } = require("./src/modules/insight/insightRoutes");
+const {
+  createFinancialHealthRoutes,
+} = require("./src/modules/financialHealth/financialHealthRoutes");
 const { createAiRoutes } = require("./src/modules/ai/aiRoutes");
 const { createPlacesRoutes } = require("./src/modules/places/placesRoutes");
 const { findCurrentUser, getUserId } = require("./src/utils/authUtils");
@@ -161,6 +164,7 @@ const dependencies = {
 app.use("/api", createAuthRoutes(dependencies));
 app.use("/api/expenses", createExpenseRoutes(dependencies));
 app.use("/api/insights", createInsightRoutes(dependencies));
+app.use("/api/financial-health", createFinancialHealthRoutes(dependencies));
 app.use("/api", createAiRoutes(dependencies));
 app.use("/api/places", createPlacesRoutes(dependencies));
 app.use("/api", createBudgetRoutes(dependencies));

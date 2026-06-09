@@ -24,6 +24,13 @@ enum ResetChannel {
   FACEBOOK
 }
 
+enum FinancialAnalysisPeriod {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -36,18 +43,62 @@ model User {
   avatar       String?
   wallet       Decimal  @default(0) @db.Decimal(14, 2)
   sessionToken String?  @unique
+  inviteCode   String?  @unique
+  referredById String?
+  referralCount Int    @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  referredBy       User?            @relation("UserReferrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals        User[]           @relation("UserReferrals")
   expenses        Expense[]
   categories      Category[]
   budget          Budget?
   categoryBudgets CategoryBudget[]
   goals           Goal[]
   passwordResets  PasswordReset[]
+  financialHealthReports FinancialHealthReport[]
 
   @@index([email])
   @@index([sessionToken])
+  @@index([referredById])
+}
+
+model FinancialHealthReport {
+  id                   String                  @id @default(cuid())
+  userId               String
+  period               FinancialAnalysisPeriod
+  overallScore         Int
+  riskLevel            String
+  financialPersonality String
+  scoreBreakdown       Json
+  reportPayload        Json
+  engineVersion        String
+  generatedAt          DateTime                @default(now())
+
+  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ruleEvaluations FinancialRuleEvaluation[]
+
+  @@index([userId, period, generatedAt])
+}
+
+model FinancialRuleEvaluation {
+  id          String   @id @default(cuid())
+  reportId    String
+  ruleId      String
+  category    String
+  dimension   String
+  severity    String
+  triggered   Boolean
+  actual      Decimal  @db.Decimal(18, 6)
+  threshold   Decimal  @db.Decimal(18, 6)
+  scoreImpact Decimal  @db.Decimal(8, 2)
+  createdAt   DateTime @default(now())
+
+  report FinancialHealthReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId, triggered])
+  @@index([ruleId])
 }
 
 model Category {

@@ -17,6 +17,7 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
   const today = startOfDay(new Date());
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
   const weekStart = getWeekStart(today);
+  const budgetPeriod = getBudgetPeriodContext(budget?.period, today);
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const daysElapsed = Math.max(today.getDate(), 1);
   const normalizedTransactions = expenses.map(normalizeExpense).filter((expense) => expense.amount > 0);
@@ -31,33 +32,46 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
   const dailyIncomes = normalizedIncomes.filter((income) => sameDay(income.dateObject, today));
   const weeklyIncomes = normalizedIncomes.filter((income) => income.dateObject >= weekStart && income.dateObject <= today);
   const monthlyIncomes = normalizedIncomes.filter((income) => income.dateObject >= monthStart && income.dateObject <= today);
+  const periodExpenses = normalizedExpenses.filter(
+    (expense) => expense.dateObject >= budgetPeriod.start && expense.dateObject <= today
+  );
+  const periodIncomes = normalizedIncomes.filter(
+    (income) => income.dateObject >= budgetPeriod.start && income.dateObject <= today
+  );
   const totalDailySpending = sumAmounts(dailyExpenses);
   const weeklySpending = sumAmounts(weeklyExpenses);
   const monthlySpending = sumAmounts(monthlyExpenses);
   const totalDailyIncome = sumAmounts(dailyIncomes);
   const weeklyIncome = sumAmounts(weeklyIncomes);
   const monthlyIncome = sumAmounts(monthlyIncomes);
-  const averageDailySpending = monthlySpending / daysElapsed;
+  const periodSpending = sumAmounts(periodExpenses);
+  const periodIncome = sumAmounts(periodIncomes);
+  const averageDailySpending = periodSpending / Math.max(budgetPeriod.elapsedDays, 1);
   const balanceBase = Number(wallet || 0);
-  const remainingBalance = Math.max(balanceBase + monthlyIncome - monthlySpending, 0);
+  const rawRemainingBalance = balanceBase + periodIncome - periodSpending;
+  const remainingBalance = Math.max(rawRemainingBalance, 0);
+  const cashShortfall = Math.max(-rawRemainingBalance, 0);
   const netCashFlow = monthlyIncome - monthlySpending;
   const predictedDaysRemaining = averageDailySpending > 0
     ? Math.max(Math.floor(remainingBalance / averageDailySpending), 0)
     : null;
-  const monthlySpendingForecast = Math.round(averageDailySpending * daysInMonth);
+  const monthlySpendingForecast = Math.round(averageDailySpending * budgetPeriod.totalDays);
   const baseBudgetAmount = Number(budget?.amount || 0);
-  const budgetAmount = getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome);
-  const budgetUsage = budgetAmount > 0 ? Math.round((monthlySpending / budgetAmount) * 100) : 0;
+  const budgetAmount = getEffectiveBudgetAmount(baseBudgetAmount);
+  const budgetUsage = budgetAmount > 0 ? Math.round((periodSpending / budgetAmount) * 100) : 0;
   const budgetLevel = getBudgetLevel(budgetUsage);
-  const categoryTotals = getCategoryTotals(monthlyExpenses);
+  const categoryTotals = getCategoryTotals(periodExpenses);
   const topCategoryEntry = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
-  const categoryBudgetSummaries = buildCategoryBudgetSummaries(monthlyExpenses, categoryBudgets);
-  const dailySeries = buildDailySeries(monthlyExpenses, monthStart, today);
+  const topCategoryShare = topCategoryEntry && periodSpending > 0
+    ? Math.round((topCategoryEntry[1] / periodSpending) * 100)
+    : 0;
+  const categoryBudgetSummaries = buildCategoryBudgetSummaries(periodExpenses, categoryBudgets);
+  const dailySeries = buildDailySeries(periodExpenses, budgetPeriod.start, today);
   const continuousIncreaseDays = getTrailingIncreaseDays(dailySeries);
   const abnormalDays = dailySeries.filter((item) => averageDailySpending > 0 && item.amount > averageDailySpending * 1.3);
-  const repeatedSmallTransactions = detectRepeatedSmallTransactions(monthlyExpenses);
-  const nightSpending = detectNightSpending(monthlyExpenses);
-  const categorySpikes = detectCategorySpikes(monthlyExpenses, today);
+  const repeatedSmallTransactions = detectRepeatedSmallTransactions(periodExpenses);
+  const nightSpending = detectNightSpending(periodExpenses);
+  const categorySpikes = detectCategorySpikes(periodExpenses, today);
   const burnRateTrend = continuousIncreaseDays >= 3 ? 'accelerating' : monthlySpendingForecast > monthlySpending ? 'stable' : 'low';
   const overspendingProbability = getOverspendingProbability({
     budgetUsage,
@@ -75,13 +89,26 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     nightSpending,
     categorySpikes,
     remainingBalance,
-    averageDailySpending
+    averageDailySpending,
+    cashShortfall,
+    periodIncome,
+    periodSpending,
+    topCategoryShare,
+    monthlySpendingForecast,
+    budgetAmount
   });
   const riskLevel = getRiskLevel(financialHealthScore, budgetLevel, overspendingProbability);
+  const overallStatus = riskLevel === 'critical'
+    ? 'Cần hành động ngay'
+    : riskLevel === 'high'
+      ? 'Rủi ro cao'
+      : riskLevel === 'medium'
+        ? 'Cần theo dõi'
+        : budgetLevel.status;
   const alerts = buildAlerts({
     budgetLevel,
     budgetUsage,
-    monthlySpending,
+    monthlySpending: periodSpending,
     budgetAmount,
     categoryBudgetSummaries,
     continuousIncreaseDays,
@@ -100,7 +127,7 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     repeatedSmallTransactions,
     nightSpending,
     predictedDaysRemaining,
-    monthlySpending,
+    monthlySpending: periodSpending,
     budgetAmount
   });
   const insights = buildInsights({
@@ -110,17 +137,28 @@ export function analyzeFinance({ expenses = [], budget = null, categoryBudgets =
     nightSpending,
     categorySpikes,
     monthlySpendingForecast,
-    budgetAmount
+    budgetAmount,
+    cashShortfall,
+    periodSpending,
+    periodIncome,
+    topCategoryEntry,
+    topCategoryShare,
+    periodLabel: budgetPeriod.label
   });
 
   return {
-    status: budgetLevel.status,
+    status: overallStatus,
     risk_level: riskLevel,
     budget_level: budgetLevel.key,
     budget_usage: budgetUsage,
     budget_amount: budgetAmount,
     base_budget_amount: baseBudgetAmount,
     remaining_balance: Math.round(remainingBalance),
+    cash_shortfall: Math.round(cashShortfall),
+    budget_period: budgetPeriod.key,
+    budget_period_label: budgetPeriod.label,
+    period_spending: Math.round(periodSpending),
+    period_income: Math.round(periodIncome),
     total_expense: Math.round(totalExpense),
     total_income: Math.round(totalIncome),
     total_daily_income: Math.round(totalDailyIncome),
@@ -230,8 +268,49 @@ function sumAmounts(expenses) {
   return expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
 }
 
-function getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome) {
-  return Number(baseBudgetAmount || 0) + Number(monthlyIncome || 0);
+function getEffectiveBudgetAmount(baseBudgetAmount) {
+  return Number(baseBudgetAmount || 0);
+}
+
+function normalizeVietnameseKey(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .toLowerCase()
+    .trim();
+}
+
+function getBudgetPeriodContext(period, today) {
+  const normalized = normalizeVietnameseKey(period);
+  if (normalized.includes('tuan') || normalized === 'week') {
+    const start = getWeekStart(today);
+    return {
+      key: 'week',
+      label: 'tuần này',
+      start,
+      totalDays: 7,
+      elapsedDays: Math.max(Math.floor((today - start) / DAY_MS) + 1, 1)
+    };
+  }
+  if (normalized.includes('nam') || normalized === 'year') {
+    const start = new Date(today.getFullYear(), 0, 1);
+    const end = new Date(today.getFullYear(), 11, 31);
+    return {
+      key: 'year',
+      label: 'năm nay',
+      start,
+      totalDays: Math.floor((end - start) / DAY_MS) + 1,
+      elapsedDays: Math.max(Math.floor((today - start) / DAY_MS) + 1, 1)
+    };
+  }
+  return {
+    key: 'month',
+    label: 'tháng này',
+    start: new Date(today.getFullYear(), today.getMonth(), 1),
+    totalDays: new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate(),
+    elapsedDays: Math.max(today.getDate(), 1)
+  };
 }
 
 function getBudgetLevel(usage) {
@@ -341,7 +420,20 @@ function getOverspendingProbability({ budgetUsage, continuousIncreaseDays, abnor
   return Math.max(0, Math.min(Math.round(probability), 100));
 }
 
-function getFinancialHealthScore({ budgetUsage, continuousIncreaseDays, abnormalDays, repeatedSmallTransactions, nightSpending, categorySpikes, remainingBalance, averageDailySpending }) {
+function getFinancialHealthScore({
+  budgetUsage,
+  continuousIncreaseDays,
+  abnormalDays,
+  repeatedSmallTransactions,
+  nightSpending,
+  categorySpikes,
+  cashShortfall,
+  periodIncome,
+  periodSpending,
+  topCategoryShare,
+  monthlySpendingForecast,
+  budgetAmount
+}) {
   let score = 100;
   if (budgetUsage > 100) score -= 35;
   else if (budgetUsage > 90) score -= 25;
@@ -351,7 +443,12 @@ function getFinancialHealthScore({ budgetUsage, continuousIncreaseDays, abnormal
   score -= Math.min(repeatedSmallTransactions.length * 4, 10);
   if (nightSpending.length >= 2) score -= 8;
   score -= Math.min(categorySpikes.length * 6, 12);
-  if (averageDailySpending > 0 && remainingBalance / averageDailySpending <= 7) score -= 15;
+  if (cashShortfall > 0) score -= 30;
+  if (periodIncome > 0 && periodSpending > periodIncome) score -= 15;
+  else if (periodIncome === 0 && periodSpending > 0) score -= 10;
+  if (topCategoryShare >= 70) score -= 15;
+  else if (topCategoryShare >= 50) score -= 8;
+  if (budgetAmount > 0 && monthlySpendingForecast > budgetAmount) score -= 15;
   return Math.max(0, Math.min(Math.round(score), 100));
 }
 
@@ -466,8 +563,31 @@ function buildRecommendations(context) {
   return [...new Set(recommendations)].slice(0, 5);
 }
 
-function buildInsights({ continuousIncreaseDays, abnormalDays, repeatedSmallTransactions, nightSpending, categorySpikes, monthlySpendingForecast, budgetAmount }) {
+function buildInsights({
+  continuousIncreaseDays,
+  abnormalDays,
+  repeatedSmallTransactions,
+  nightSpending,
+  categorySpikes,
+  monthlySpendingForecast,
+  budgetAmount,
+  cashShortfall,
+  periodSpending,
+  periodIncome,
+  topCategoryEntry,
+  topCategoryShare,
+  periodLabel
+}) {
   const insights = [];
+  if (cashShortfall > 0) {
+    insights.push(`Chi tiêu ${periodLabel} cao hơn số tiền ghi nhận được ${formatMoney(cashShortfall)}.`);
+  }
+  if (topCategoryEntry && topCategoryShare >= 40) {
+    insights.push(`${topCategoryEntry[0]} chiếm ${topCategoryShare}% tổng chi (${formatMoney(topCategoryEntry[1])}), cần ưu tiên cắt giảm.`);
+  }
+  if (periodIncome > 0 && periodSpending > periodIncome) {
+    insights.push(`Dòng tiền ${periodLabel} đang âm ${formatMoney(periodSpending - periodIncome)}.`);
+  }
   if (continuousIncreaseDays >= 3) {
     insights.push(`Chi tiêu tăng liên tục ${continuousIncreaseDays} ngày.`);
   }

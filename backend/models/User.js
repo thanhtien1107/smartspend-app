@@ -65,6 +65,24 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    inviteCode: {
+      type: String,
+      uppercase: true,
+      trim: true,
+      unique: true,
+      sparse: true,
+      index: true
+    },
+    referredByUserId: {
+      type: String,
+      default: '',
+      index: true
+    },
+    referralCount: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
     createdAt: {
       type: Date,
       default: Date.now
