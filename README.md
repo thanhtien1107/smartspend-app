@@ -50,3 +50,19 @@
 
 - Dữ liệu lưu trong `data/db.json`
 - Mục quét hóa đơn chưa được triển khai theo yêu cầu
+
+## Week 8 additions
+
+- Database-oriented structure for report access:
+  - JSON store now has `notifications`, `emailOutbox`, `reportExports`, and `debtCarryovers` collections.
+  - Prisma schema was extended with `Notification`, `ReportExport`, and `DebtCarryover` models plus indexed transaction fields.
+- Report export:
+  - Backend endpoints: `/api/reports/export/pdf`, `/api/reports/export/excel`, `/api/reports/export/csv`.
+  - Report page has buttons for PDF, Excel, and CSV export.
+- Debt carry-over logic:
+  - If spending exceeds the available budget in a budget period, the overflow becomes debt.
+  - The debt is carried to the next period and reduces the next available budget.
+  - Dashboard, Report, and AI insight data include debt fields.
+- Budget overspending notification:
+  - When a saved expense causes overspending, SmartSpend creates a customer notification.
+  - Notifications are stored in `notifications`; simulated email records are stored in `emailOutbox` for demonstration.

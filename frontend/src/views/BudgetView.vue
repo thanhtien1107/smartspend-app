@@ -131,10 +131,9 @@ const currentBudgetAmount = computed(() => Number(currentBudget.value?.amount ||
 const currentBudgetPeriod = computed(() => currentBudget.value?.period || '-');
 const enhancedCategoryBudgets = computed(() => getCategoryBudgetUsage(expenses.value, categoryBudgets.value));
 const enhancedGoals = computed(() => {
-  const savedAmount = Math.max(Number(user.value?.wallet || 0), 0);
-
   return goals.value.map((goal) => {
     const target = Math.max(Number(goal.target || 0), 0);
+    const savedAmount = Math.max(Number(goal.currentAmount ?? goal.savedAmount ?? goal.saved ?? 0), 0);
     const rawProgress = target > 0 ? (savedAmount / target) * 100 : 0;
     const progress = Math.min(Math.round(rawProgress), 100);
 
@@ -183,7 +182,7 @@ async function submitGoal() {
   loading.value = true;
   message.value = '';
   try {
-    const payload = { name: goalForm.name, target: Number(goalForm.target || 0) };
+    const payload = { name: goalForm.name, target: Number(goalForm.target || 0), currentAmount: 0 };
     const validationMessage = validateGoal(payload);
     if (validationMessage) {
       message.value = validationMessage;
@@ -191,7 +190,11 @@ async function submitGoal() {
     }
 
     if (editingGoalId.value) {
-      await appStore.updateGoal(editingGoalId.value, payload);
+      const existingGoal = goals.value.find((goal) => goal.id === editingGoalId.value);
+      await appStore.updateGoal(editingGoalId.value, {
+        ...payload,
+        currentAmount: Number(existingGoal?.currentAmount ?? existingGoal?.savedAmount ?? 0),
+      });
       message.value = 'Cập nhật mục tiêu thành công.';
     } else {
       await appStore.addGoal(payload);

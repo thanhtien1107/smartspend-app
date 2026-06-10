@@ -4,11 +4,9 @@
   "description": "SmartSpend - money tracking app with budget and AI insights",
   "main": "backend/server.js",
   "scripts": {
-    "start": "npm run build:intelligence && node backend/server.js",
+    "start": "node backend/server.js",
     "dev": "vite --config frontend/vite.config.js --host 0.0.0.0",
     "build": "vite build --config frontend/vite.config.js",
-    "build:intelligence": "tsc -p tsconfig.financial-intelligence.json",
-    "test:intelligence": "npm run build:intelligence && node --test backend/tests/financial-intelligence.test.js",
     "preview": "vite preview --config frontend/vite.config.js --host 0.0.0.0",
     "prisma:generate": "prisma generate --schema backend/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema backend/prisma/schema.prisma",
@@ -30,11 +28,8 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.9.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "prisma": "^6.19.0",
-    "typescript": "^6.0.3",
     "vite": "^6.0.7"
   }
 }

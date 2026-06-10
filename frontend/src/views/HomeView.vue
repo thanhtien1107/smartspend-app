@@ -35,6 +35,14 @@
           <strong id="budget-usage">{{ finance.budget_usage }}%</strong>
         </div>
         <div class="card">
+          <span>Nợ kỳ trước</span>
+          <strong class="amount-expense">{{ formatMoney(finance.debt_carried_from_previous) }}</strong>
+        </div>
+        <div class="card">
+          <span>Nợ chuyển kỳ sau</span>
+          <strong class="amount-expense">{{ formatMoney(finance.debt_to_carry_next_period) }}</strong>
+        </div>
+        <div class="card">
           <span>Trạng thái</span>
           <strong id="budget-status">{{ finance.status }}</strong>
         </div>
@@ -55,6 +63,77 @@
             :style="{ width: `${progressWidth}%` }"
           ></span>
         </div>
+      </div>
+
+      <div class="debt-carryover-box compact-dashboard-debt">
+        <h3>Debt carry-over</h3>
+        <p>
+          Ngân sách trước nợ: <strong>{{ formatMoney(finance.budget_before_debt) }}</strong> ·
+          Khả dụng sau nợ: <strong>{{ formatMoney(finance.available_budget_after_debt) }}</strong>
+        </p>
+        <p v-if="finance.debt_to_carry_next_period > 0" class="amount-expense">
+          Cảnh báo: {{ formatMoney(finance.debt_to_carry_next_period) }} sẽ bị chuyển sang kỳ tiếp theo.
+        </p>
+        <p v-else-if="finance.surplus_to_carry_next_period > 0" class="amount-income">
+          Cuối kỳ đang dư {{ formatMoney(finance.surplus_to_carry_next_period) }}. Hãy chọn cách xử lý cho kỳ sau.
+        </p>
+
+        <div v-if="finance.debt_to_carry_next_period > 0" class="carryover-decision-panel">
+          <p v-if="finance.debt_repayment_limited" class="notification-box expense-error">
+            {{ finance.debt_repayment_warning }}
+          </p>
+          <p>
+            Dự kiến kỳ sau trừ nợ:
+            <strong class="amount-expense">{{ formatMoney(finance.debt_repayment_amount) }}</strong>
+          </p>
+          <button type="button" class="btn-action" :disabled="carryoverLoading" @click="applyDebtDecision">
+            Áp dụng trừ nợ vào budget kỳ sau
+          </button>
+        </div>
+
+        <div
+          v-else-if="finance.surplus_to_carry_next_period > 0 && !activeSavingGoals.length"
+          class="carryover-decision-panel"
+        >
+          <p>Không có saving goal nên tiền dư sẽ được cộng vào budget kỳ sau.</p>
+          <button type="button" class="btn-action" :disabled="carryoverLoading" @click="applyNoSavingDecision">
+            Cộng {{ formatMoney(finance.surplus_to_carry_next_period) }} vào budget kỳ sau
+          </button>
+        </div>
+
+        <form
+          v-else-if="finance.surplus_to_carry_next_period > 0 && activeSavingGoals.length"
+          class="dashboard-controls carryover-decision-form"
+          @submit.prevent="applySavingDecision"
+        >
+          <select v-model="carryoverForm.strategy">
+            <option value="keep_for_next_budget">Giữ hết tiền dư cho budget tháng sau</option>
+            <option value="split_saving_and_budget">Gửi một phần vào saving goal, phần còn lại cộng budget</option>
+            <option value="send_all_to_saving">Gửi hết tiền dư vào saving goal</option>
+          </select>
+          <select
+            v-if="carryoverForm.strategy !== 'keep_for_next_budget'"
+            v-model="carryoverForm.goalId"
+          >
+            <option v-for="goal in activeSavingGoals" :key="goal.id" :value="goal.id">
+              {{ goal.name }} · còn thiếu {{ formatMoney(goal.remaining) }}
+            </option>
+          </select>
+          <input
+            v-if="carryoverForm.strategy === 'split_saving_and_budget'"
+            v-model.number="carryoverForm.savingAmount"
+            type="number"
+            min="1"
+            :max="finance.surplus_to_carry_next_period - 1"
+            placeholder="Số tiền gửi saving goal"
+          />
+          <button type="submit" class="primary-btn" :disabled="carryoverLoading">
+            Áp dụng lựa chọn
+          </button>
+        </form>
+        <p v-if="carryoverMessage" class="notification-box" :class="{ 'expense-error': carryoverError }">
+          {{ carryoverMessage }}
+        </p>
       </div>
 
       <form class="dashboard-controls transaction-search-form" @submit.prevent="searchTransactions">
@@ -113,6 +192,25 @@
           :class="`alert-${alert.priority}`"
         >
           {{ alert.message }}
+        </p>
+      </div>
+
+      <div
+        v-if="customerNotifications.length"
+        class="notification-box customer-notification-box"
+      >
+        <div class="notification-heading-row">
+          <strong>Thông báo cho khách hàng</strong>
+          <button type="button" class="btn-action" @click="markRead">
+            Đánh dấu đã đọc
+          </button>
+        </div>
+        <p
+          v-for="notification in customerNotifications"
+          :key="notification.id"
+          :class="`alert-${notification.priority || 'medium'}`"
+        >
+          {{ notification.message }}
         </p>
       </div>
 
@@ -288,140 +386,6 @@
         </div>
       </div>
     </div>
-
-    <div
-      v-if="editingExpenseId"
-      class="transaction-edit-overlay"
-      @click.self="cancelEditExpense"
-    >
-      <form
-        class="transaction-edit-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="transaction-edit-title"
-        @keydown.esc="cancelEditExpense"
-        @submit.prevent="saveEditedExpense"
-      >
-        <div class="transaction-edit-heading">
-          <div>
-            <span>SmartSpend</span>
-            <h2 id="transaction-edit-title">Sửa giao dịch</h2>
-          </div>
-          <button
-            type="button"
-            class="transaction-edit-close"
-            aria-label="Đóng"
-            @click="cancelEditExpense"
-          >
-            ×
-          </button>
-        </div>
-
-        <p v-if="editExpenseError" class="notification-box expense-error">
-          {{ editExpenseError }}
-        </p>
-
-        <div class="transaction-edit-grid">
-          <label>
-            <span>Loại giao dịch</span>
-            <select v-model="editForm.type" @change="syncEditCategory">
-              <option value="expense">Chi tiêu</option>
-              <option value="income">Thu vào</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Tên giao dịch</span>
-            <input
-              v-model.trim="editForm.title"
-              type="text"
-              maxlength="120"
-              placeholder="Ví dụ: Ăn trưa"
-              required
-            />
-          </label>
-
-          <label>
-            <span>Số tiền</span>
-            <input
-              v-model.number="editForm.amount"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="1000000000"
-              required
-            />
-          </label>
-
-          <label>
-            <span>Danh mục</span>
-            <select v-model="editForm.category" required>
-              <option
-                v-for="category in editCategories"
-                :key="category"
-                :value="category"
-              >
-                {{ getCategoryIcon(category) }} {{ category }}
-              </option>
-            </select>
-          </label>
-
-          <label>
-            <span>Ngày</span>
-            <input v-model="editForm.date" type="date" :max="today" required />
-          </label>
-
-          <label>
-            <span>Giờ</span>
-            <input v-model="editForm.time" type="time" />
-          </label>
-
-          <label class="transaction-edit-wide">
-            <span>Ghi chú</span>
-            <textarea
-              v-model.trim="editForm.note"
-              rows="3"
-              maxlength="500"
-              placeholder="Mô tả thêm về giao dịch"
-            ></textarea>
-          </label>
-
-          <label>
-            <span>Địa điểm</span>
-            <input
-              v-model.trim="editForm.location"
-              type="text"
-              maxlength="200"
-              placeholder="Địa điểm giao dịch"
-            />
-          </label>
-
-          <label>
-            <span>Người tham gia</span>
-            <input
-              v-model.trim="editForm.friends"
-              type="text"
-              maxlength="200"
-              placeholder="Tên bạn bè hoặc người tham gia"
-            />
-          </label>
-        </div>
-
-        <div class="transaction-edit-actions">
-          <button
-            type="button"
-            class="secondary-btn"
-            :disabled="editSaving"
-            @click="cancelEditExpense"
-          >
-            Hủy
-          </button>
-          <button type="submit" class="primary-btn" :disabled="editSaving">
-            {{ editSaving ? "Đang lưu..." : "Lưu thay đổi" }}
-          </button>
-        </div>
-      </form>
-    </div>
   </section>
 </template>
 
@@ -434,21 +398,16 @@ import {
   validateExpenseData,
 } from "../utils/financialAnalysis";
 import { apiFetch } from "../services/api";
+import { fetchNotifications, markNotificationsRead } from "../services/notification";
+import { applyDebtCarryoverDecision } from "../services/debtCarryover";
 import { getCategoryIcon } from "../utils/categoryIcons";
 import { createCacheKey, fetchWithCache } from "../utils/cache";
-import {
-  EXPENSE_CATEGORIES,
-  INCOME_CATEGORIES,
-} from "../utils/transactionCategories";
+import { INCOME_CATEGORIES } from "../utils/transactionCategories";
 
 const appStore = useAppStore();
-const { expenses, budgets, categories, categoryBudgets, user } =
+const { expenses, budgets, categories, categoryBudgets, goals, user } =
   storeToRefs(appStore);
 const expenseError = ref("");
-const editExpenseError = ref("");
-const editingExpenseId = ref("");
-const editSaving = ref(false);
-const editForm = ref(createEmptyEditForm());
 const searchText = ref("");
 const selectedCategory = ref("");
 const selectedDate = ref("");
@@ -469,6 +428,15 @@ const placeResults = ref([]);
 const placeSearched = ref(false);
 const placeCoordinates = ref(null);
 const placeRadiusOptions = [500, 1000, 2000, 5000, 10000, 25000, 50000];
+const customerNotifications = ref([]);
+const carryoverLoading = ref(false);
+const carryoverMessage = ref('');
+const carryoverError = ref(false);
+const carryoverForm = ref({
+  strategy: 'keep_for_next_budget',
+  goalId: '',
+  savingAmount: null
+});
 
 const currentBudget = computed(() => budgets.value[0] || null);
 const finance = computed(() =>
@@ -476,6 +444,7 @@ const finance = computed(() =>
     expenses: expenses.value,
     budget: currentBudget.value,
     categoryBudgets: categoryBudgets.value,
+    goals: goals.value,
     wallet: user.value?.wallet || 0,
   }),
 );
@@ -490,19 +459,26 @@ const riskText = computed(
     })[finance.value.risk_level] || "-",
 );
 
+const activeSavingGoals = computed(() => {
+  return (goals.value || [])
+    .map((goal) => {
+      const target = Math.max(Number(goal.target || 0), 0);
+      const savedAmount = Math.max(Number(goal.currentAmount ?? goal.savedAmount ?? goal.saved ?? 0), 0);
+      return {
+        ...goal,
+        target,
+        savedAmount,
+        remaining: Math.max(target - savedAmount, 0),
+      };
+    })
+    .filter((goal) => goal.target > 0 && goal.remaining > 0);
+});
+
 const allCategories = computed(() => {
   return [...new Set([...(categories.value || []), ...INCOME_CATEGORIES])];
 });
 
 const incomeCategorySet = new Set(INCOME_CATEGORIES);
-const today = new Date().toISOString().slice(0, 10);
-const editCategories = computed(() =>
-  editForm.value.type === "income"
-    ? INCOME_CATEGORIES
-    : categories.value.length
-      ? categories.value
-      : EXPENSE_CATEGORIES,
-);
 
 function isIncomeTransaction(expense = {}) {
   return expense.type === "income" || (!expense.type && incomeCategorySet.has(expense.category));
@@ -608,84 +584,94 @@ onMounted(async () => {
       appStore.fetchGoals(),
       appStore.fetchCategories(),
     ]);
+    customerNotifications.value = await fetchNotifications();
   } catch (error) {
     console.error("Fetch dashboard data failed", error);
     expenseError.value = "Không thể tải dữ liệu Dashboard.";
   }
 });
 
-function editExpense(expense) {
-  expenseError.value = "";
-  editExpenseError.value = "";
-  editingExpenseId.value = expense.id;
-  editForm.value = {
-    type: isIncomeTransaction(expense) ? "income" : "expense",
-    title: String(expense.title || ""),
-    amount: Number(expense.amount || 0),
-    category: String(expense.category || ""),
-    date: String(expense.date || "").slice(0, 10),
-    time: String(expense.time || ""),
-    note: String(expense.note || ""),
-    location: String(expense.location || ""),
-    friends: String(expense.friends || ""),
-  };
-  syncEditCategory();
-}
-
-function createEmptyEditForm() {
-  return {
-    type: "expense",
-    title: "",
-    amount: null,
-    category: "",
-    date: "",
-    time: "",
-    note: "",
-    location: "",
-    friends: "",
-  };
-}
-
-function syncEditCategory() {
-  const available = editCategories.value;
-  if (!available.includes(editForm.value.category)) {
-    editForm.value.category = available[0] || "";
+async function markRead() {
+  try {
+    await markNotificationsRead();
+    customerNotifications.value = customerNotifications.value.map((notification) => ({
+      ...notification,
+      read: true,
+    }));
+  } catch (error) {
+    console.error('Mark notifications read failed', error);
   }
 }
 
-function cancelEditExpense() {
-  if (editSaving.value) return;
-  editingExpenseId.value = "";
-  editExpenseError.value = "";
-  editForm.value = createEmptyEditForm();
+async function refreshCarryoverContext() {
+  await Promise.allSettled([
+    appStore.fetchBudgets(),
+    appStore.fetchGoals(),
+  ]);
 }
 
-async function saveEditedExpense() {
-  if (!editingExpenseId.value || editSaving.value) return;
-  editExpenseError.value = "";
+async function submitCarryoverDecision(payload) {
+  carryoverLoading.value = true;
+  carryoverMessage.value = '';
+  carryoverError.value = false;
+  try {
+    const result = await applyDebtCarryoverDecision(payload);
+    await refreshCarryoverContext();
+    carryoverMessage.value = result?.decision?.warning
+      ? `Đã áp dụng. ${result.decision.warning}`
+      : 'Đã áp dụng debt carry-over cho budget kỳ sau.';
+  } catch (error) {
+    console.error('Apply carry-over decision failed', error);
+    carryoverError.value = true;
+    carryoverMessage.value = error?.error || error?.message || 'Không thể áp dụng lựa chọn carry-over.';
+  } finally {
+    carryoverLoading.value = false;
+  }
+}
+
+async function applyDebtDecision() {
+  await submitCarryoverDecision({ strategy: 'debt_repayment' });
+}
+
+async function applyNoSavingDecision() {
+  await submitCarryoverDecision({ strategy: 'no_saving_auto_carry' });
+}
+
+async function applySavingDecision() {
   const payload = {
-    ...editForm.value,
-    title: editForm.value.title.trim(),
-    amount: Number(editForm.value.amount),
+    strategy: carryoverForm.value.strategy,
+    goalId: carryoverForm.value.goalId || activeSavingGoals.value[0]?.id || '',
+    savingAmount: Number(carryoverForm.value.savingAmount || 0),
+  };
+  await submitCarryoverDecision(payload);
+}
+
+async function editExpense(expense) {
+  expenseError.value = "";
+  const rawAmount = window.prompt(
+    "Nhập số tiền mới",
+    String(expense.amount || ""),
+  );
+  if (rawAmount === null) return;
+  const rawNote =
+    window.prompt("Nhập ghi chú mới", expense.note || "") ?? expense.note ?? "";
+  const payload = {
+    ...expense,
+    amount: Number(rawAmount),
+    note: rawNote,
   };
   const errors = validateExpenseData(payload);
-  if (!payload.title) errors.unshift("Tên giao dịch không được để trống.");
   if (errors.length) {
-    editExpenseError.value = errors[0];
+    expenseError.value = errors[0];
     return;
   }
 
-  editSaving.value = true;
   try {
-    await appStore.updateExpense(editingExpenseId.value, payload);
-    editingExpenseId.value = "";
-    editForm.value = createEmptyEditForm();
+    await appStore.updateExpense(expense.id, payload);
   } catch (error) {
     console.error("Update expense failed", error);
-    editExpenseError.value =
-      error?.message || error?.error || "Không thể sửa giao dịch.";
-  } finally {
-    editSaving.value = false;
+    expenseError.value =
+      error?.message || error?.error || "Không thể sửa chi tiêu.";
   }
 }
 
