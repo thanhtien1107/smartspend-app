@@ -4,6 +4,8 @@
       <h2>Ngân sách & Mục tiêu</h2>
       <p v-if="message" class="notification-box is-visible">{{ message }}</p>
 
+      <div class="budget-workspace-grid">
+      <div class="budget-settings-card">
       <div class="budget-summary">
         <div>
           <span>Budget hiện tại</span>
@@ -39,6 +41,7 @@
         </button>
       </form>
 
+      </div>
       <div class="category-budget-box">
         <h3>Budget theo hạng mục</h3>
         <div id="category-budget-list" class="goal-list">
@@ -58,7 +61,7 @@
         </div>
       </div>
 
-      <div class="goal-box">
+      <div class="goal-box goal-box-top">
         <h3>Saving Goal</h3>
         <form id="goal-form" @submit.prevent="submitGoal">
           <label>
@@ -98,6 +101,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </section>

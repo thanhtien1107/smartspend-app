@@ -30,6 +30,26 @@ export async function register(payload) {
   return { ok: response.ok, status: response.status, data };
 }
 
+
+export async function verifyEmailOtp(email, code) {
+  const response = await apiFetch('/api/email-verification/verify', {
+    method: 'POST',
+    body: JSON.stringify({ email, code })
+  });
+  const data = await readJson(response);
+  if (response.ok && data.token) localStorage.setItem('authToken', data.token);
+  return { ok: response.ok, status: response.status, data };
+}
+
+export async function resendEmailOtp(email) {
+  const response = await apiFetch('/api/email-verification/resend', {
+    method: 'POST',
+    body: JSON.stringify({ email })
+  });
+  const data = await readJson(response);
+  return { ok: response.ok, status: response.status, data };
+}
+
 export async function socialLogin(payload) {
   const response = await apiFetch('/api/social-login', {
     method: 'POST',

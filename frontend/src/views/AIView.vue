@@ -1,8 +1,8 @@
 <template>
   <section id="ai" class="screen active">
-    <div class="panel ai-panel">
+    <div class="panel ai-panel ai-workspace">
       <h2>AI Chat</h2>
-      <div class="insight-box">
+      <aside class="insight-box ai-insight-sidebar">
         <h3>AI Financial Insights</h3>
         <div id="report-insights">
           <p v-if="insightLoading">Đang phân tích dữ liệu chi tiêu...</p>
@@ -19,9 +19,14 @@
           </template>
           <p v-else>Chưa có insight.</p>
         </div>
-      </div>
+        <div class="ai-quick-prompts">
+          <button type="button" @click="message = 'Tôi có vượt ngân sách không?'">Tôi có vượt ngân sách?</button>
+          <button type="button" @click="message = 'Tháng này tôi chi nhiều nhất vào đâu?'">Chi nhiều nhất vào đâu?</button>
+          <button type="button" @click="message = 'Tôi nên tiết kiệm bao nhiêu mỗi tháng?'">Nên tiết kiệm bao nhiêu?</button>
+        </div>
+      </aside>
 
-      <div class="chat-box">
+      <div class="chat-box ai-chat-main">
         <div id="chat-history" class="chat-history">
           <div v-for="item in messages" :key="item.id" class="chat-message" :class="item.role">
             {{ item.text }}

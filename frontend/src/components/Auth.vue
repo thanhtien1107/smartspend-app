@@ -1,12 +1,69 @@
 <template>
-  <div id="login-container" class="login-shell active">
-    <div class="login-art">
-      <img src="/assets/logo/app-logo.svg" alt="SmartSpending" class="login-logo" />
-      <h1>SmartSpending</h1>
-      <p>Chi tiêu thông minh, tương lai vững vàng.</p>
-      <img src="/assets/logo/app-interface.svg" alt="Giao diện mở app SmartSpending" class="login-splash-art" />
-    </div>
+  <div id="login-container" class="login-shell active" :class="{ 'register-mode': isRegister }">
+    <section class="login-art">
+      <div class="brand-row">
+        <div class="brand-logo-box"><img src="/assets/logo/app-logo.svg" alt="SmartSpending" /></div>
+        <span>SmartSpending</span>
+      </div>
+      <div class="login-art-main">
+        <div class="hero-copy">
+          <span class="hero-badge">QUẢN LÝ TÀI CHÍNH CÁ NHÂN</span>
+          <h1>Chi tiêu thông minh.<br><em>Tương lai vững vàng.</em></h1>
+          <p>Theo dõi dòng tiền, kiểm soát ngân sách và hoàn thành mục tiêu tiết kiệm trong một ứng dụng duy nhất.</p>
+          <div class="feature-list">
+            <div><b>✓</b><span>Theo dõi chi tiêu theo danh mục</span></div>
+            <div><b>✓</b><span>Báo cáo và phân tích trực quan</span></div>
+            <div><b>✓</b><span>Lập mục tiêu tiết kiệm rõ ràng</span></div>
+          </div>
+        </div>
 
+<<<<<<< HEAD
+        <div class="auth-dashboard-preview" aria-hidden="true">
+          <div class="preview-topbar">
+            <div>
+              <span>TỔNG QUAN THÁNG NÀY</span>
+              <strong>Tài chính của bạn</strong>
+            </div>
+            <div class="preview-avatar">S</div>
+          </div>
+          <div class="preview-balance">
+            <span>Số dư khả dụng</span>
+            <strong>8.450.000đ</strong>
+            <small>↑ 12% so với tháng trước</small>
+          </div>
+          <div class="preview-stat-grid">
+            <div><span>Chi tiêu</span><strong>3.250.000đ</strong></div>
+            <div><span>Ngân sách</span><strong>6.000.000đ</strong></div>
+            <div><span>Tiết kiệm</span><strong>2.750.000đ</strong></div>
+          </div>
+          <div class="preview-progress-block">
+            <div><span>Ngân sách tháng</span><b>54%</b></div>
+            <div class="preview-progress"><i></i></div>
+          </div>
+          <div class="preview-recent">
+            <div class="preview-section-title"><strong>Chi tiêu gần đây</strong><span>Xem tất cả</span></div>
+            <div class="preview-transaction"><b>🍜</b><div><strong>Ăn uống</strong><span>Hôm nay, 12:30</span></div><em>-65.000đ</em></div>
+            <div class="preview-transaction"><b>🚌</b><div><strong>Di chuyển</strong><span>Hôm nay, 08:15</span></div><em>-20.000đ</em></div>
+            <div class="preview-transaction"><b>☕</b><div><strong>Cà phê</strong><span>Hôm qua, 19:20</span></div><em>-45.000đ</em></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="login-panel auth-phone">
+      <button v-if="authView !== 'main'" type="button" id="auth-back" class="auth-back" aria-label="Quay lại" @click="showMainAuth">←</button>
+
+      <div class="auth-tabs" v-if="authView === 'main'">
+        <button type="button" :class="{ active: !isRegister }" @click="isRegister = false">Đăng nhập</button>
+        <button type="button" :class="{ active: isRegister }" @click="isRegister = true">Đăng ký</button>
+      </div>
+
+      <div class="auth-heading">
+        <span class="auth-eyebrow">SMARTSPENDING</span>
+        <h2 id="auth-title">{{ isRegister ? 'Tạo tài khoản mới' : authTitle }}</h2>
+        <p id="auth-subtitle" class="auth-subtitle">{{ authSubtitle }}</p>
+      </div>
+=======
     <div class="login-panel auth-phone">
       <button
         v-if="authView !== 'main'"
@@ -21,116 +78,70 @@
 
       <h2 id="auth-title">{{ isRegister ? 'Chào người dùng mới!' : authTitle }}</h2>
       <p id="auth-subtitle" class="auth-subtitle">{{ authSubtitle }}</p>
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 
       <div id="auth-main" :class="{ hidden: authView !== 'main' }">
         <form id="login-form" class="auth-view" @submit.prevent="handleSubmit">
           <template v-if="!isRegister">
-            <label class="login-only">
-              <input
-                v-model.trim="loginForm.username"
-                type="text"
-                inputmode="email"
-                placeholder="Email"
-                :disabled="loginLocked || loading"
-                required
-              />
+            <label class="field-label">Email</label>
+            <label class="input-wrap login-only">
+              <span class="input-icon">✉</span>
+              <input v-model.trim="loginForm.username" type="text" inputmode="email" placeholder="ban@example.com" :disabled="loginLocked || loading" required />
             </label>
-            <label class="login-only password-field">
-              <input
-                v-model.trim="loginForm.password"
-                :type="showLoginPassword ? 'text' : 'password'"
-                placeholder="Mật Khẩu"
-                :disabled="loginLocked || loading"
-                required
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                aria-label="Hiện mật khẩu"
-                :disabled="loginLocked || loading"
-                @click="showLoginPassword = !showLoginPassword"
-              >
-                ⌧
-              </button>
+            <div class="password-label-row"><label class="field-label">Mật khẩu</label><button type="button" class="text-link auth-forgot-link login-only" id="forgot-password" @click="authView = 'forgot'">Quên mật khẩu?</button></div>
+            <label class="input-wrap login-only password-field">
+              <span class="input-icon">⌕</span>
+              <input v-model.trim="loginForm.password" :type="showLoginPassword ? 'text' : 'password'" placeholder="Nhập mật khẩu" :disabled="loginLocked || loading" required />
+              <button type="button" class="password-toggle" :aria-label="showLoginPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'" :disabled="loginLocked || loading" @click="showLoginPassword = !showLoginPassword">{{ showLoginPassword ? '◉' : '◎' }}</button>
             </label>
           </template>
 
           <div id="register-extra" class="register-extra" :class="{ hidden: !isRegister }">
-            <label>
-              <input v-model.trim="registerForm.fullName" type="text" placeholder="Họ Tên" :required="isRegister" />
-            </label>
-            <label>
-              <input v-model.trim="registerForm.email" type="email" placeholder="Email" :required="isRegister" />
-            </label>
-            <div class="gender-select" role="group" aria-label="Giới tính">
-              <label class="gender-card" :class="{ selected: registerForm.gender === 'Nam', active: registerForm.gender === 'Nam' }">
-                <input v-model="registerForm.gender" type="radio" name="register-gender" value="Nam" />
-                <span>Nam</span>
-                <img src="/assets/images/male.png" alt="Nam" />
-              </label>
-              <label class="gender-card" :class="{ selected: registerForm.gender === 'Nữ', active: registerForm.gender === 'Nữ' }">
-                <input v-model="registerForm.gender" type="radio" name="register-gender" value="Nữ" />
-                <span>Nữ</span>
-                <img src="/assets/images/female.png" alt="Nữ" />
-              </label>
-            </div>
-            <label>
-              <input v-model="registerForm.birthday" type="date" />
-            </label>
-            <label class="password-field">
-              <input
-                v-model.trim="registerForm.password"
-                :type="showRegisterPassword ? 'text' : 'password'"
-                placeholder="Mật Khẩu"
-                :required="isRegister"
-              />
-              <button type="button" class="password-toggle" aria-label="Hiện mật khẩu" @click="showRegisterPassword = !showRegisterPassword">⌧</button>
-            </label>
-            <label class="password-field">
-              <input
-                v-model.trim="registerForm.confirmPassword"
-                :type="showRegisterConfirm ? 'text' : 'password'"
-                placeholder="Xác nhận mật khẩu"
-                :required="isRegister"
-              />
-              <button type="button" class="password-toggle" aria-label="Hiện mật khẩu" @click="showRegisterConfirm = !showRegisterConfirm">⌧</button>
-            </label>
+            <div class="name-field"><label class="field-label" for="register-full-name">Họ tên</label><label class="input-wrap"><span class="input-icon">♙</span><input id="register-full-name" v-model.trim="registerForm.fullName" type="text" name="fullName" autocomplete="name" placeholder="Nguyễn Văn A" :required="isRegister" /></label></div>
+            <div><label class="field-label">Ngày sinh</label><label class="input-wrap"><span class="input-icon">□</span><input v-model="registerForm.birthday" type="date" /></label></div>
+            <div class="full-field"><label class="field-label">Email</label><label class="input-wrap"><span class="input-icon">✉</span><input v-model.trim="registerForm.email" type="email" placeholder="ban@example.com" :required="isRegister" /></label></div>
+            <div class="full-field"><label class="field-label">Giới tính</label><div class="gender-select" role="group" aria-label="Giới tính"><label class="gender-card" :class="{ selected: registerForm.gender === 'Nam' }"><input v-model="registerForm.gender" type="radio" name="register-gender" value="Nam" /><span>Nam</span><img src="/assets/images/male.png" alt="Nam" /></label><label class="gender-card" :class="{ selected: registerForm.gender === 'Nữ' }"><input v-model="registerForm.gender" type="radio" name="register-gender" value="Nữ" /><span>Nữ</span><img src="/assets/images/female.png" alt="Nữ" /></label></div></div>
+            <div class="full-field"><label class="field-label">Mật khẩu</label><label class="input-wrap password-field"><span class="input-icon">⌕</span><input v-model.trim="registerForm.password" :type="showRegisterPassword ? 'text' : 'password'" placeholder="Tối thiểu 8 ký tự" :required="isRegister" /><button type="button" class="password-toggle" @click="showRegisterPassword = !showRegisterPassword">{{ showRegisterPassword ? '◉' : '◎' }}</button></label></div>
+            <div class="full-field"><label class="field-label">Xác nhận mật khẩu</label><label class="input-wrap password-field"><span class="input-icon">⌕</span><input v-model.trim="registerForm.confirmPassword" :type="showRegisterConfirm ? 'text' : 'password'" placeholder="Nhập lại mật khẩu" :required="isRegister" /><button type="button" class="password-toggle" @click="showRegisterConfirm = !showRegisterConfirm">{{ showRegisterConfirm ? '◉' : '◎' }}</button></label></div>
           </div>
 
-          <button v-if="!isRegister" type="button" class="text-link auth-forgot-link login-only" id="forgot-password" @click="authView = 'forgot'">
-            Quên Mật Khẩu?
-          </button>
-          <button type="submit" class="primary-btn" id="auth-submit" :disabled="loading || (!isRegister && loginLocked)">
-            {{ !isRegister && loginLocked ? `Chờ ${loginCooldownRemaining}s` : loading ? 'Đang xử lý...' : isRegister ? 'Đăng ký' : 'Đăng Nhập' }}
-          </button>
+          <button type="submit" class="primary-btn" id="auth-submit" :disabled="loading || (!isRegister && loginLocked)">{{ !isRegister && loginLocked ? `Chờ ${loginCooldownRemaining}s` : loading ? 'Đang xử lý...' : isRegister ? 'Đăng ký miễn phí' : 'Đăng nhập' }}</button>
         </form>
 
         <div v-if="!isRegister" id="social-login-row" class="social-login">
           <div class="auth-divider"><span>Hoặc tiếp tục với</span></div>
           <div class="social-buttons">
             <div ref="googleButtonSlot" class="google-signin-button"></div>
-            <button
-              v-if="!googleReady"
-              type="button"
-              class="social-btn google-btn"
-              :disabled="loading || loginLocked"
-              @click="handleSocialClick('Google')"
-            >
-              G Google
-            </button>
-            <button type="button" class="social-btn facebook-btn" :disabled="loginLocked || loading" @click="handleSocialClick('Facebook')">f Facebook</button>
+            <button v-if="!googleReady" type="button" class="social-btn google-btn" :disabled="loading || loginLocked" @click="handleSocialClick('Google')"><strong>G</strong> Google</button>
+            <button type="button" class="social-btn facebook-btn" :disabled="loginLocked || loading" @click="handleSocialClick('Facebook')"><strong>f</strong> Facebook</button>
           </div>
         </div>
 
-        <p v-if="message" class="login-hint" :class="{ 'login-error': messageType === 'error' }">{{ message }}</p>
-        <p class="login-hint" id="login-hint">
-          {{ isRegister ? 'Đã có tài khoản?' : 'Không có tài khoản?' }}
-          <button type="button" id="toggle-register" @click="toggleRegister">
-            {{ isRegister ? 'Đăng nhập ngay' : 'Đăng ký ngay' }}
-          </button>
-        </p>
+        <p v-if="message" class="login-hint status-message" :class="{ 'login-error': messageType === 'error' }">{{ message }}</p>
+        <p class="login-hint" id="login-hint">{{ isRegister ? 'Đã có tài khoản?' : 'Chưa có tài khoản?' }} <button type="button" id="toggle-register" @click="toggleRegister">{{ isRegister ? 'Đăng nhập ngay' : 'Đăng ký ngay' }}</button></p>
       </div>
 
+<<<<<<< HEAD
+
+      <div id="verify-panel" :class="{ hidden: authView !== 'verify' }">
+        <form class="auth-view verification-view" @submit.prevent="handleVerifyEmail">
+          <label class="field-label">Mã OTP</label>
+          <label class="input-wrap otp-wrap"><span class="input-icon">✉</span><input v-model.trim="verificationCode" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Nhập 6 chữ số" required /></label>
+          <p v-if="devVerificationCode" class="dev-otp-note">Chế độ demo: mã OTP là <strong>{{ devVerificationCode }}</strong></p>
+          <button type="submit" class="primary-btn" :disabled="loading">{{ loading ? 'Đang xác minh...' : 'Xác minh email' }}</button>
+          <button type="button" class="resend-otp-btn" :disabled="loading" @click="handleResendOtp">Gửi lại mã OTP</button>
+        </form>
+      </div>
+
+      <div id="reset-panel" :class="{ hidden: authView !== 'forgot' }">
+        <form id="reset-form" class="auth-view" @submit.prevent="handleForgotPassword">
+          <label class="field-label">Email</label><label class="input-wrap"><span class="input-icon">✉</span><input v-model.trim="forgotEmail" type="email" placeholder="ban@example.com" required /></label>
+          <div class="reset-channel-row"><label><input v-model="resetChannel" type="radio" name="reset-channel" value="gmail" /> Gmail</label><label><input v-model="resetChannel" type="radio" name="reset-channel" value="facebook" /> Facebook</label></div>
+          <button type="submit" class="primary-btn">Gửi mã xác minh</button>
+        </form>
+      </div>
+    </main>
+=======
       <div id="reset-panel" :class="{ hidden: authView !== 'forgot' }">
         <form id="reset-form" class="auth-view" @submit.prevent="handleForgotPassword">
           <label>
@@ -144,13 +155,18 @@
         </form>
       </div>
     </div>
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
   </div>
 </template>
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+<<<<<<< HEAD
+import { fetchOAuthConfig, login, loginWithGoogleCredential, register, resendEmailOtp, startFacebookLogin, verifyEmailOtp } from '../services/auth.js';
+=======
 import { fetchOAuthConfig, login, loginWithGoogleCredential, register, startFacebookLogin } from '../services/auth.js';
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 import { useAppStore } from '../stores/useAppStore';
 
 const appStore = useAppStore();
@@ -170,7 +186,16 @@ const showRegisterConfirm = ref(false);
 const googleButtonSlot = ref(null);
 const googleReady = ref(false);
 const googleClientId = ref('');
+<<<<<<< HEAD
+const facebookAppId = ref('');
+const oauthConfigLoaded = ref(false);
 const loginCooldownRemaining = ref(0);
+const verificationEmail = ref('');
+const verificationCode = ref('');
+const devVerificationCode = ref('');
+=======
+const loginCooldownRemaining = ref(0);
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 
 let googleInitPromise = null;
 let loginCooldownTimer = null;
@@ -189,8 +214,13 @@ const registerForm = reactive({
   confirmPassword: ''
 });
 
+<<<<<<< HEAD
+const authTitle = computed(() => authView.value === 'verify' ? 'Xác minh email' : (authView.value === 'forgot' ? 'Quên Mật Khẩu?' : 'Chào mừng trở lại!'));
+=======
 const authTitle = computed(() => (authView.value === 'forgot' ? 'Quên Mật Khẩu?' : 'Chào mừng trở lại!'));
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 const authSubtitle = computed(() => {
+  if (authView.value === 'verify') return `Nhập mã OTP 6 số đã gửi đến ${verificationEmail.value}`;
   if (isRegister.value) return 'Chào mừng bạn đến với ứng dụng';
   if (authView.value === 'forgot') return 'Vui lòng nhập email để nhận mã xác minh';
   return 'Chào mừng trở lại bạn đã bị bỏ lỡ!';
@@ -259,28 +289,32 @@ async function handleSubmit() {
       }
 
       console.log('Register success', result.data);
+      if (result.data?.requiresVerification) {
+        verificationEmail.value = result.data.email || registerForm.email;
+        devVerificationCode.value = result.data.devCode || '';
+        verificationCode.value = '';
+        authView.value = 'verify';
+        setMessage(result.data.message || 'Vui lòng nhập mã OTP để xác minh email.', 'info');
+        return;
+      }
+
       if (result.data?.user) {
         appStore.setAuth(result.data.user);
-        setMessage('Đăng ký thành công.', 'info');
         router.push('/');
-        return;
       }
-
-      const loginResult = await login(registerForm.email, registerForm.password);
-      if (!loginResult.ok) {
-        setMessage(loginResult.data?.error || 'Đăng ký thành công nhưng tự động đăng nhập thất bại.', 'error');
-        console.error('Auto login after register failed', loginResult.data);
-        return;
-      }
-
-      appStore.setAuth(loginResult.data.user);
-      setMessage('Đăng ký và đăng nhập thành công.', 'info');
-      router.push('/');
       return;
     }
 
     const result = await login(loginForm.username, loginForm.password);
     if (!result.ok) {
+      if (result.data?.requiresVerification) {
+        verificationEmail.value = result.data.email || loginForm.username;
+        verificationCode.value = '';
+        devVerificationCode.value = '';
+        authView.value = 'verify';
+        setMessage(result.data.error, 'error');
+        return;
+      }
       if (result.data?.retryAfterSeconds) {
         startLoginCooldown(Number(result.data.retryAfterSeconds));
       } else {
@@ -303,6 +337,46 @@ async function handleSubmit() {
   }
 }
 
+<<<<<<< HEAD
+async function handleVerifyEmail() {
+  loading.value = true;
+  setMessage('', 'info');
+  try {
+    const result = await verifyEmailOtp(verificationEmail.value, verificationCode.value);
+    if (!result.ok) {
+      setMessage(result.data?.error || 'Xác minh email thất bại.', 'error');
+      return;
+    }
+    appStore.setAuth(result.data.user);
+    setMessage('Xác minh email thành công.', 'info');
+    router.push('/');
+  } catch (error) {
+    setMessage('Không thể kết nối tới server.', 'error');
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function handleResendOtp() {
+  loading.value = true;
+  setMessage('', 'info');
+  try {
+    const result = await resendEmailOtp(verificationEmail.value);
+    if (!result.ok) {
+      setMessage(result.data?.error || 'Không thể gửi lại mã OTP.', 'error');
+      return;
+    }
+    devVerificationCode.value = result.data?.devCode || '';
+    setMessage(result.data?.message || 'Đã gửi lại mã OTP.', 'info');
+  } catch (error) {
+    setMessage('Không thể kết nối tới server.', 'error');
+  } finally {
+    loading.value = false;
+  }
+}
+
+=======
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 function handleForgotPassword() {
   console.log('Forgot password requested', {
     email: forgotEmail.value,
@@ -317,7 +391,7 @@ async function handleSocialClick(provider) {
     setMessage('', 'info');
     await initializeGoogleLogin();
     if (!googleReady.value || !window.google?.accounts?.id) {
-      setMessage('Không thể tải Google Login. Hãy kiểm tra GOOGLE_CLIENT_ID và cấu hình JavaScript origin.', 'error');
+      setMessage('Đăng nhập Google chưa được cấu hình. Hãy thêm GOOGLE_CLIENT_ID vào file .env và khai báo http://localhost:5173 trong Authorized JavaScript origins.', 'error');
       return;
     }
     window.google.accounts.id.prompt((notification) => {
@@ -329,7 +403,12 @@ async function handleSocialClick(provider) {
   }
 
   if (provider === 'Facebook') {
-    setMessage('Dang chuyen sang Facebook...', 'info');
+    await ensureOAuthConfig();
+    if (!facebookAppId.value) {
+      setMessage('Đăng nhập Facebook chưa được cấu hình. Hãy thêm FACEBOOK_APP_ID và FACEBOOK_APP_SECRET vào file .env.', 'error');
+      return;
+    }
+    setMessage('Đang chuyển sang Facebook...', 'info');
     startFacebookLogin();
   }
 }
@@ -355,12 +434,12 @@ function consumeFacebookCallback() {
     localStorage.setItem('authToken', token);
     localStorage.setItem('hasSmartSpendAccount', 'true');
     appStore.setAuth(userData);
-    setMessage('Dang nhap Facebook thanh cong.', 'info');
+    setMessage('Đăng nhập Facebook thành công.', 'info');
     router.replace('/');
     return true;
   } catch (error) {
     console.error('Facebook callback parse error', error);
-    setMessage('Khong the doc du lieu dang nhap Facebook.', 'error');
+    setMessage('Không thể đọc dữ liệu đăng nhập Facebook.', 'error');
     router.replace('/login');
     return true;
   }
@@ -379,13 +458,19 @@ async function initializeGoogleLogin() {
   renderGoogleButton();
 }
 
-async function setupGoogleIdentity() {
+async function ensureOAuthConfig() {
+  if (oauthConfigLoaded.value) return;
   const config = await fetchOAuthConfig();
   googleClientId.value = config.googleClientId || import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  facebookAppId.value = config.facebookAppId || import.meta.env.VITE_FACEBOOK_APP_ID || '';
+  oauthConfigLoaded.value = true;
+}
+
+async function setupGoogleIdentity() {
+  await ensureOAuthConfig();
 
   if (!googleClientId.value) {
     googleReady.value = false;
-    setMessage('Chưa cấu hình GOOGLE_CLIENT_ID trong .env backend.', 'error');
     return;
   }
 

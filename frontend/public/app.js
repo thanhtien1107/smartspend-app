@@ -2,79 +2,157 @@ function buildAuthShell() {
   const container = document.getElementById('login-container');
   if (!container) return;
   container.innerHTML = `
-    <div class="auth-card">
-      <button type="button" id="auth-back" class="auth-back hidden" aria-label="Quay lại">‹</button>
-      <h2 id="auth-title">Chào người dùng mới!</h2>
-      <p id="auth-subtitle">Chào mừng bạn đến với ứng dụng</p>
-      <div id="auth-main">
-        <form id="login-form" class="auth-form">
-          <div id="register-extra" class="register-extra hidden">
-            <input type="text" id="register-fullname" placeholder="Họ Tên" autocomplete="name" />
-            <input type="email" id="register-email" placeholder="Email" autocomplete="email" />
-            <input type="hidden" id="register-avatar" value="assets/images/male.png" />
-            <div class="gender-picker" role="radiogroup" aria-label="Giới tính">
-              <button type="button" class="gender-card active" data-avatar="assets/images/male.png" aria-pressed="true">
-                <span>Nam</span>
-                <img src="assets/images/male.png" alt="Nam" />
-              </button>
-              <button type="button" class="gender-card" data-avatar="assets/images/female.png" aria-pressed="false">
-                <span>Nữ</span>
-                <img src="assets/images/female.png" alt="Nữ" />
-              </button>
-            </div>
-            <input type="date" id="register-birthday" value="2022-12-04" />
-            <div class="password-field">
-              <input type="password" id="register-password" placeholder="Mật Khẩu" autocomplete="new-password" />
-              <button type="button" class="password-toggle" data-target="register-password" aria-label="Ẩn hiện mật khẩu">⌧</button>
-            </div>
-            <input type="password" id="register-password-confirm" placeholder="Xác nhận mật khẩu" autocomplete="new-password" />
-          </div>
-          <input type="email" id="login-username" placeholder="Email" autocomplete="email" required />
-          <div class="password-field">
-            <input type="password" id="login-password" placeholder="Mật Khẩu" autocomplete="current-password" required />
-            <button type="button" class="password-toggle" data-target="login-password" aria-label="Ẩn hiện mật khẩu">⌧</button>
-          </div>
-          <button type="submit" class="primary-btn" id="auth-submit">Đăng ký</button>
-        </form>
-        <button type="button" class="forgot-link hidden" id="forgot-password">Quên Mật Khẩu?</button>
-        <div id="social-login" class="social-login hidden">
-          <div class="divider"><span>Hoặc tiếp tục với</span></div>
-          <div class="social-buttons">
-            <div id="google-signin-button" class="google-signin-button"></div>
-            <button type="button" id="google-login-fallback" class="social-btn google hidden" data-provider="google">G Google</button>
-            <button type="button" class="social-btn facebook" data-provider="facebook">f Facebook</button>
-          </div>
-          <p id="social-login-status" class="social-login-status"></p>
+    <div class="auth-decor auth-decor-one"></div>
+    <div class="auth-decor auth-decor-two"></div>
+    <section class="auth-hero-panel" aria-label="Giới thiệu SmartSpend">
+      <div class="auth-brand-row">
+        <img src="assets/logo/app-logo.svg" alt="SmartSpend" class="auth-brand-logo" />
+        <div>
+          <strong>SmartSpend</strong>
+          <span>Chi tiêu thông minh, tương lai vững vàng</span>
         </div>
-        <p class="auth-switch"><span id="auth-question">Đã có tài khoản?</span> <button type="button" id="toggle-register">Đăng nhập ngay</button></p>
-        <p class="login-hint" id="login-hint"></p>
       </div>
-      <div id="reset-panel" class="hidden">
-        <h3 id="reset-title">Quên Mật Khẩu?</h3>
-        <p id="reset-subtitle">Đừng lo! Vui lòng nhập địa chỉ email với tài khoản của bạn.</p>
-        <form id="reset-form" class="auth-form">
-          <input type="email" id="reset-username" placeholder="Email" autocomplete="email" required />
-          <div id="reset-channel-row" class="reset-channel-row">
-            <button type="button" class="channel-btn active" data-channel="gmail" aria-pressed="true">Gmail</button>
-            <button type="button" class="channel-btn" data-channel="facebook" aria-pressed="false">Facebook</button>
-          </div>
-          <input type="text" id="reset-code" class="hidden" placeholder="Nhập mã xác minh" inputmode="numeric" />
-          <div class="password-field hidden" id="reset-password-wrap">
-            <input type="password" id="reset-password" placeholder="Mật Khẩu" autocomplete="new-password" />
-            <button type="button" class="password-toggle" data-target="reset-password" aria-label="Ẩn hiện mật khẩu">⌧</button>
-          </div>
-          <div class="password-field hidden" id="reset-confirm-wrap">
-            <input type="password" id="reset-password-confirm" placeholder="Xác nhận mật khẩu" autocomplete="new-password" />
-            <button type="button" class="password-toggle" data-target="reset-password-confirm" aria-label="Ẩn hiện mật khẩu">⌧</button>
-          </div>
-          <button type="submit" class="primary-btn" id="reset-submit">Gửi</button>
-          <button type="button" class="secondary-btn hidden" id="reset-cancel">Hủy</button>
-          <p id="reset-helper" class="login-hint"></p>
-        </form>
+      <div class="auth-hero-copy">
+        <span class="auth-eyebrow">Quản lý tài chính cá nhân</span>
+        <h1>Hiểu tiền của bạn rõ hơn mỗi ngày.</h1>
+        <p>Theo dõi chi tiêu, kiểm soát ngân sách và nhận insight trực quan để tiết kiệm dễ dàng hơn.</p>
       </div>
-    </div>
+      <div class="auth-mockup-card">
+        <div class="mockup-topline">
+          <span>Tổng quan tháng này</span>
+          <strong>+18%</strong>
+        </div>
+        <div class="mockup-balance">4,250,000đ</div>
+        <div class="mockup-chart" aria-hidden="true">
+          <span style="height:45%"></span>
+          <span style="height:68%"></span>
+          <span style="height:52%"></span>
+          <span style="height:84%"></span>
+          <span style="height:62%"></span>
+        </div>
+        <div class="mockup-feature-grid">
+          <div><b>📊</b><span>Báo cáo</span></div>
+          <div><b>🎯</b><span>Mục tiêu</span></div>
+          <div><b>💳</b><span>Chi tiêu</span></div>
+        </div>
+      </div>
+      <div class="auth-feature-list">
+        <div><span>✓</span> Theo dõi chi tiêu theo danh mục</div>
+        <div><span>✓</span> Cảnh báo khi gần vượt ngân sách</div>
+        <div><span>✓</span> Insight thông minh cho thói quen tài chính</div>
+      </div>
+    </section>
+
+    <section class="auth-form-panel" aria-label="Đăng nhập SmartSpend">
+      <div class="auth-card">
+        <button type="button" id="auth-back" class="auth-back hidden" aria-label="Quay lại">←</button>
+        <div class="auth-mobile-brand">
+          <img src="assets/logo/app-logo.svg" alt="SmartSpend" />
+          <strong>SmartSpend</strong>
+        </div>
+        <div class="auth-mode-pill" aria-hidden="true">
+          <span class="auth-mode-login">Đăng nhập</span>
+          <span class="auth-mode-register">Đăng ký</span>
+        </div>
+        <h2 id="auth-title">Chào mừng trở lại!</h2>
+        <p id="auth-subtitle">Đăng nhập để tiếp tục quản lý tài chính của bạn.</p>
+        <div id="auth-main">
+          <form id="login-form" class="auth-form">
+            <div id="register-extra" class="register-extra hidden">
+              <div class="auth-field">
+                <span>👤</span>
+                <input type="text" id="register-fullname" placeholder="Họ tên" autocomplete="name" />
+              </div>
+              <div class="auth-field">
+                <span>✉️</span>
+                <input type="email" id="register-email" placeholder="Email" autocomplete="email" />
+              </div>
+              <input type="hidden" id="register-avatar" value="assets/images/male.png" />
+              <div class="gender-picker" role="radiogroup" aria-label="Giới tính">
+                <button type="button" class="gender-card active" data-avatar="assets/images/male.png" aria-pressed="true">
+                  <span>Nam</span>
+                  <img src="assets/images/male.png" alt="Nam" />
+                </button>
+                <button type="button" class="gender-card" data-avatar="assets/images/female.png" aria-pressed="false">
+                  <span>Nữ</span>
+                  <img src="assets/images/female.png" alt="Nữ" />
+                </button>
+              </div>
+              <div class="auth-field">
+                <span>📅</span>
+                <input type="date" id="register-birthday" value="2022-12-04" />
+              </div>
+              <div class="auth-field password-field">
+                <span>🔒</span>
+                <input type="password" id="register-password" placeholder="Mật khẩu" autocomplete="new-password" />
+                <button type="button" class="password-toggle" data-target="register-password" aria-label="Ẩn hiện mật khẩu">👁</button>
+              </div>
+              <div class="auth-field password-field">
+                <span>🔒</span>
+                <input type="password" id="register-password-confirm" placeholder="Xác nhận mật khẩu" autocomplete="new-password" />
+                <button type="button" class="password-toggle" data-target="register-password-confirm" aria-label="Ẩn hiện mật khẩu">👁</button>
+              </div>
+            </div>
+            <div class="auth-field login-email-field">
+              <span>✉️</span>
+              <input type="email" id="login-username" placeholder="Email" autocomplete="email" required />
+            </div>
+            <div class="auth-field password-field login-password-field">
+              <span>🔒</span>
+              <input type="password" id="login-password" placeholder="Mật khẩu" autocomplete="current-password" required />
+              <button type="button" class="password-toggle" data-target="login-password" aria-label="Ẩn hiện mật khẩu">👁</button>
+            </div>
+            <button type="button" class="forgot-link hidden" id="forgot-password">Quên mật khẩu?</button>
+            <button type="submit" class="primary-btn" id="auth-submit">Đăng nhập</button>
+          </form>
+          <div id="social-login" class="social-login hidden">
+            <div class="divider"><span>Hoặc tiếp tục với</span></div>
+            <div class="social-buttons">
+              <div id="google-signin-button" class="google-signin-button"></div>
+              <button type="button" id="google-login-fallback" class="social-btn google hidden" data-provider="google">G Google</button>
+              <button type="button" class="social-btn facebook" data-provider="facebook">f Facebook</button>
+            </div>
+            <p id="social-login-status" class="social-login-status"></p>
+          </div>
+          <p class="auth-switch"><span id="auth-question">Không có tài khoản?</span> <button type="button" id="toggle-register">Đăng ký ngay</button></p>
+          <p class="login-hint" id="login-hint"></p>
+        </div>
+        <div id="reset-panel" class="hidden">
+          <h3 id="reset-title">Quên mật khẩu?</h3>
+          <p id="reset-subtitle">Nhập email tài khoản để nhận mã xác minh.</p>
+          <form id="reset-form" class="auth-form">
+            <div class="auth-field">
+              <span>✉️</span>
+              <input type="email" id="reset-username" placeholder="Email" autocomplete="email" required />
+            </div>
+            <div id="reset-channel-row" class="reset-channel-row">
+              <button type="button" class="channel-btn active" data-channel="gmail" aria-pressed="true">Gmail</button>
+              <button type="button" class="channel-btn" data-channel="facebook" aria-pressed="false">Facebook</button>
+            </div>
+            <div class="auth-field">
+              <span>🔢</span>
+              <input type="text" id="reset-code" placeholder="Nhập mã xác minh" inputmode="numeric" />
+            </div>
+            <div class="auth-field password-field hidden" id="reset-password-wrap">
+              <span>🔒</span>
+              <input type="password" id="reset-password" placeholder="Mật khẩu" autocomplete="new-password" />
+              <button type="button" class="password-toggle" data-target="reset-password" aria-label="Ẩn hiện mật khẩu">👁</button>
+            </div>
+            <div class="auth-field password-field hidden" id="reset-confirm-wrap">
+              <span>🔒</span>
+              <input type="password" id="reset-password-confirm" placeholder="Xác nhận mật khẩu" autocomplete="new-password" />
+              <button type="button" class="password-toggle" data-target="reset-password-confirm" aria-label="Ẩn hiện mật khẩu">👁</button>
+            </div>
+            <button type="submit" class="primary-btn" id="reset-submit">Gửi</button>
+            <button type="button" class="secondary-btn hidden" id="reset-cancel">Hủy</button>
+            <p id="reset-helper" class="login-hint"></p>
+          </form>
+        </div>
+      </div>
+    </section>
   `;
 }
+
 
 buildAuthShell();
 
@@ -1696,10 +1774,11 @@ let resetLogin = '';
 
 function setAuthMode(isRegister) {
   registerMode = isRegister;
+  loginContainer?.classList.toggle('register-mode', isRegister);
   if (resetPanel && authMain && authBack) showAuthMain();
-  authTitle.textContent = isRegister ? 'Chào người dùng mới!' : 'Chào mừng trở lại!';
-  authSubtitle.textContent = isRegister ? 'Chào mừng bạn đến với ứng dụng' : 'Chào mừng trở lại bạn đã bị bỏ lỡ!';
-  authSubmit.textContent = isRegister ? 'Đăng ký' : 'Đăng Nhập';
+  authTitle.textContent = isRegister ? 'Tạo tài khoản mới' : 'Chào mừng trở lại!';
+  authSubtitle.textContent = isRegister ? 'Bắt đầu quản lý chi tiêu và mục tiêu tiết kiệm của bạn.' : 'Đăng nhập để tiếp tục theo dõi tài chính cá nhân.';
+  authSubmit.textContent = isRegister ? 'Đăng ký miễn phí' : 'Đăng nhập';
   registerExtra.classList.toggle('hidden', !isRegister);
   forgotPasswordBtn.classList.toggle('hidden', isRegister);
   socialLogin.classList.toggle('hidden', isRegister);
