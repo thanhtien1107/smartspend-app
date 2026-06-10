@@ -7,6 +7,7 @@ import AIView from '../views/AIView.vue';
 import AddView from '../views/AddView.vue';
 import ReportView from '../views/ReportView.vue';
 import ProfileView from '../views/ProfileView.vue';
+import OnboardingView from '../views/OnboardingView.vue';
 import { useAppStore } from '../stores/useAppStore';
 
 const routes = [
@@ -15,6 +16,11 @@ const routes = [
     name: 'login',
     component: Auth,
     meta: { public: true }
+  },
+  {
+    path: '/onboarding',
+    name: 'onboarding',
+    component: OnboardingView
   },
   {
     path: '/',
@@ -68,6 +74,14 @@ router.beforeEach((to) => {
 
   if (!to.meta.public && !appStore.isAuthenticated) {
     return { name: 'login' };
+  }
+
+  if (appStore.isAuthenticated && to.name !== 'onboarding' && localStorage.getItem('smartspendOnboardingCompleted') !== 'true') {
+    return { name: 'onboarding' };
+  }
+
+  if (to.name === 'onboarding' && localStorage.getItem('smartspendOnboardingCompleted') === 'true') {
+    return { name: 'home' };
   }
 
   return true;

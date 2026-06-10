@@ -1,5 +1,17 @@
 <template>
-  <section id="dashboard" class="screen active">
+  <section id="dashboard" class="screen active modern-dashboard">
+    <div class="dashboard-welcome">
+      <div>
+        <span class="eyebrow">TỔNG QUAN THÁNG NÀY</span>
+        <h2>Tài chính của bạn trong một cái nhìn</h2>
+        <p>Theo dõi dòng tiền, ngân sách và những việc cần chú ý.</p>
+      </div>
+      <div class="dashboard-quick-actions">
+        <router-link to="/ai" class="quick-action secondary"><span>✨</span> Hỏi Smart AI</router-link>
+        <router-link to="/add" class="quick-action primary"><span>＋</span> Thêm giao dịch</router-link>
+      </div>
+    </div>
+    <div class="dashboard-content-grid">
     <div class="panel summary-panel">
       <h2>Dashboard</h2>
 
@@ -246,8 +258,11 @@
       </div>
     </div>
 
-    <div class="panel list-panel">
-      <h2>{{ transactionListTitle }}</h2>
+    <div class="panel list-panel dashboard-recent-panel">
+      <div class="recent-panel-heading">
+        <div><span class="eyebrow">HOẠT ĐỘNG GẦN ĐÂY</span><h2>{{ transactionListTitle }}</h2></div>
+        <router-link to="/add" class="recent-add-link">＋ Thêm</router-link>
+      </div>
       <p v-if="expenseError" class="notification-box expense-error">
         {{ expenseError }}
       </p>
@@ -287,6 +302,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
 </template>

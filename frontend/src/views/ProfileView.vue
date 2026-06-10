@@ -1,13 +1,15 @@
 <template>
   <section id="profile" class="screen active">
-    <div class="panel profile-hero">
+    <div class="panel profile-hero profile-hero-enhanced">
       <img id="profile-avatar" :src="user?.avatar || '/assets/logo/app-logo.svg'" alt="Avatar hồ sơ" />
       <div>
         <h2 id="profile-display-name">{{ displayName }}</h2>
         <p id="profile-email">{{ user?.email || user?.username || 'Chưa có email' }}</p>
+        <span class="profile-member-badge">✓ Tài khoản SmartSpend</span>
       </div>
     </div>
 
+    <div class="profile-content-grid">
     <div class="panel profile-panel">
       <h2>Thông tin tài khoản</h2>
       <form id="profile-form" class="profile-form" @submit.prevent>
@@ -38,6 +40,7 @@
         <button type="button" class="profile-action-card" id="profile-export-data">Tải dữ liệu mẫu</button>
         <button type="button" class="profile-action-card" @click="handleLogout">Đăng xuất</button>
       </div>
+    </div>
     </div>
   </section>
 </template>

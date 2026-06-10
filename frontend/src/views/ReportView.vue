@@ -32,6 +32,7 @@
         </button>
       </div>
 
+      <div class="report-kpi-grid">
       <div class="report-card">
         <strong id="category-top">{{ topCategory.name }}</strong>
         <span>Hạng mục chi tiêu nhiều nhất trong kỳ</span>
@@ -47,6 +48,7 @@
       <div class="report-card">
         <strong id="expense-count">{{ selectedTransactions.length }}</strong>
         <span>Tổng số giao dịch trong kỳ</span>
+      </div>
       </div>
 
       <div class="summary-grid report-summary-grid">
@@ -92,6 +94,7 @@
         </div>
       </div>
 
+      <div class="report-chart-grid">
       <div class="chart-box report-bar-box">
         <div class="report-chart-heading">
           <div>
@@ -173,7 +176,9 @@
         </div>
       </div>
 
-      <div class="insight-box">
+      </div>
+
+      <div class="insight-box report-ai-insight">
         <h3>AI Financial Insights</h3>
         <div id="report-insights">
           <p>Điểm sức khỏe tài chính: <strong>{{ finance.financial_health_score }}/100</strong></p>
