@@ -17,6 +17,7 @@ import {
   deleteGoal as deleteGoalApi
 } from '../services/budget';
 import { fetchCategories as fetchCategoriesApi } from '../services/category';
+import { showBudgetNotificationToast } from '../services/toast';
 
 export const useAppStore = defineStore('app', () => {
   const user = ref(null);
@@ -127,6 +128,9 @@ export const useAppStore = defineStore('app', () => {
     }
 
     expenses.value.unshift(data);
+    if (data.budgetNotification) {
+      showBudgetNotificationToast(data.budgetNotification);
+    }
     await refreshFinancialContext();
     return data;
   }

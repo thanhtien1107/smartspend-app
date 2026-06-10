@@ -9,16 +9,13 @@
     {
       "id": "9c1e4bb5-366a-4124-8ccf-d38760ae7008",
       "username": "admin1",
-      "password": "admin123",
-      "token": "1546fdc8-9e1d-483e-829d-7a42afff71d3"
+      "password": "admin123"
     },
     {
       "id": "aea9332c-22f3-4d3f-b71d-080455dad66e",
       "username": "thanhtien",
       "password": "thanhtien1",
-      "token": "139bb980-8acc-45a3-8fad-f0ad957a6e06",
-      "inviteCode": "4C7D97FE",
-      "referralCount": 0
+      "token": "f4da3efe-ca90-46d6-a8fd-7755cfb29386"
     },
     {
       "id": "43c1841e-2b6d-49f5-97be-41113e08fdf4",
@@ -51,7 +48,7 @@
     {
       "id": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
       "username": "thanhtien@gmail.com",
-      "password": "newtest123",
+      "password": "thanhtien1",
       "fullName": "mmmm",
       "email": "thanhtien@gmail.com",
       "birthday": "2022-12-04",
@@ -59,7 +56,7 @@
       "avatar": "assets/images/male.png",
       "wallet": 0,
       "createdAt": "2026-05-20T18:26:42.287Z",
-      "token": ""
+      "token": "54bf6b04-7652-4203-a058-709de8383de3"
     },
     {
       "id": "1fee301b-b7de-4256-a5a2-e8c170cbe279",
@@ -110,40 +107,39 @@
       "updatedAt": "2026-05-27T16:53:18.266Z"
     },
     {
-      "id": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "username": "k@k",
-      "password": "123",
-      "fullName": "KKK",
-      "email": "k@k",
+      "id": "b18d3ef1-e2e2-4460-a3db-3d44de6d41d6",
+      "username": "lecaoanhtri@gmail",
+      "password": "huy",
+      "fullName": "huy",
+      "email": "lecaoanhtri@gmail",
       "birthday": "2022-12-04",
       "phone": "",
       "avatar": "assets/images/male.png",
       "wallet": 0,
-      "createdAt": "2026-05-28T10:33:14.343Z",
-      "token": "c184d4e0-b4bc-4987-8027-3658a8a177a6"
+      "createdAt": "2026-06-04T10:13:47.957Z",
+      "token": "10be92b8-5acb-4ed4-af84-10d67fc1dbde"
     },
     {
-      "id": "b9ba354a-34f5-4f77-852a-49686a22d6ce",
-      "username": "agnthnguyen@gmail.com",
-      "password": "123456",
-      "fullName": "Nguyen",
-      "email": "agnthnguyen@gmail.com",
+      "id": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "username": "huy@gmail.com",
+      "password": "1",
+      "fullName": "huy",
+      "email": "huy@gmail.com",
       "birthday": "2022-12-04",
       "phone": "",
       "avatar": "assets/images/male.png",
       "wallet": 0,
-      "createdAt": "2026-06-03T10:06:27.682Z",
-      "token": "01f93cbe-5c1c-4180-9018-d973ab7e1134"
+      "createdAt": "2026-06-09T16:26:54.507Z",
+      "token": "8c610fec-0cc7-4b1e-acb6-267b12c01587"
     }
   ],
   "budgets": [
     {
-      "id": "77d4cf0a-cffa-48fa-ba13-189955cf8d82",
-      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "amount": 100000,
+      "id": "b42a5489-4bf1-41f4-bf21-30fffd549007",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "amount": 1000000,
       "period": "Tháng",
-      "createdAt": "2026-05-28T10:34:41.769Z",
-      "updatedAt": "2026-05-28T11:00:12.566Z"
+      "createdAt": "2026-06-09T16:27:50.561Z"
     },
     {
       "id": "de693ab7-fd22-4d18-96f8-2f946e23e5ac",
@@ -176,84 +172,56 @@
   ],
   "expenses": [
     {
-      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
-      "id": "f73d9e37-f61e-4f02-836b-6d08528a7cb3",
-      "type": "income",
-      "title": "đi làm phát tờ rơi",
-      "amount": 200000,
-      "category": "Làm thêm",
-      "date": "2026-06-09",
-      "time": "12:14",
-      "note": "đi làm phát tờ rơi",
-      "location": "Khu du lịch Đại Nam, 1765A QL13, Thủ Dầu Một, Hồ Chí Minh, Việt Nam",
-      "friends": "",
-      "imageUrl": ""
-    },
-    {
-      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
-      "id": "a673d7c7-8760-430f-b9e3-234d7c4d63ba",
-      "type": "expense",
-      "title": "đi chơi ở khu du lịch",
-      "amount": 2000000,
-      "category": "Giải trí",
-      "date": "2026-06-09",
-      "time": "12:13",
-      "note": "đi chơi ở khu du lịch",
-      "location": "",
-      "friends": "",
-      "imageUrl": ""
-    },
-    {
-      "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
-      "id": "21dd5b73-581a-45c6-85c0-681c3f65fbdd",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "id": "da2ce3fd-9caf-4849-b08b-63673c68aa99",
       "type": "expense",
       "title": "Chi tiêu Ăn uống",
-      "amount": 50000,
+      "amount": 1111111,
+      "category": "Ăn uống",
+      "date": "2026-06-10",
+      "time": "13:26",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "id": "aea9414a-3aa2-4600-a55e-a1283e551ece",
+      "type": "expense",
+      "title": "Chi tiêu Ăn uống",
+      "amount": 100000,
+      "category": "Ăn uống",
+      "date": "2026-06-10",
+      "time": "13:26",
+      "note": "",
+      "location": "",
+      "friends": "",
+      "imageUrl": ""
+    },
+    {
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "id": "63abd676-175d-4ecd-ad19-1c9156663267",
+      "type": "expense",
+      "title": "Chi tiêu Ăn uống",
+      "amount": 1200000,
       "category": "Ăn uống",
       "date": "2026-06-09",
-      "time": "12:12",
+      "time": "23:28",
       "note": "",
       "location": "",
       "friends": "",
       "imageUrl": ""
     },
     {
-      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "id": "0df3f178-ba36-47e9-86b7-19a3363a7782",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "id": "aa172640-5269-46cc-87bd-540ca069ea52",
       "type": "expense",
-      "title": "Mèo",
-      "amount": 1233,
-      "category": "Giải trí",
-      "date": "2026-05-28",
-      "time": "",
-      "note": "",
-      "location": "",
-      "friends": "",
-      "imageUrl": ""
-    },
-    {
-      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "id": "8bfbf71c-a34a-41f0-b225-529708c0f255",
-      "type": "expense",
-      "title": "Ăn sáng",
-      "amount": 90,
+      "title": "Chi tiêu Ăn uống",
+      "amount": 1200000,
       "category": "Ăn uống",
-      "date": "2026-05-28",
-      "time": "",
-      "note": "",
-      "location": "",
-      "friends": "",
-      "imageUrl": ""
-    },
-    {
-      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "id": "364b7a15-5133-4214-97e9-f4c245530145",
-      "type": "expense",
-      "title": "Trốn nợ",
-      "amount": 122,
-      "category": "Mỹ phẩm",
-      "date": "0132-12-03",
-      "time": "",
+      "date": "2026-06-09",
+      "time": "23:27",
       "note": "",
       "location": "",
       "friends": "",
@@ -407,81 +375,84 @@
   ],
   "goals": [
     {
-      "userId": "8774124a-a5bd-47cd-8488-e15f8cd16751",
-      "id": "0b7a2d92-ab68-4178-ba69-9b24925cb275",
-      "name": "AL",
-      "target": 4000,
-      "createdAt": "2026-05-28T10:34:56.652Z"
-    },
-    {
       "userId": "3a046f22-3da4-4363-99b6-4ff6e03c4786",
       "id": "caeb283a-6b96-457b-9359-99a5ba74bb08",
       "name": "mua đồ hello kitty",
       "target": 500000,
-      "createdAt": "2026-05-28T02:19:46.732Z"
+      "createdAt": "2026-05-28T02:19:46.732Z",
+      "currentAmount": 0
     },
     {
       "id": "bb75461d-500a-4f06-a165-bdfe07f4e5d2",
       "name": "mua vàng",
       "target": 5000000,
       "createdAt": "2026-05-21T17:52:53.426Z",
-      "updatedAt": "2026-05-26T04:00:14.440Z"
+      "updatedAt": "2026-05-26T04:00:14.440Z",
+      "currentAmount": 0
     },
     {
       "id": "a8c983eb-e890-4e9d-bf70-99163d3b6796",
       "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
       "name": "mua sách",
       "target": 5000000,
-      "createdAt": "2026-05-19T16:34:10.898Z"
+      "createdAt": "2026-05-19T16:34:10.898Z",
+      "currentAmount": 0
     },
     {
       "id": "4f3e9ffa-9974-4940-a803-d2d06d139f34",
       "userId": "aea9332c-22f3-4d3f-b71d-080455dad66e",
       "name": "mua máy tính mới",
       "target": 100000000,
-      "createdAt": "2026-05-19T16:33:03.699Z"
+      "createdAt": "2026-05-19T16:33:03.699Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "bdea524b-1ac5-4857-94b5-8c4b0fe38edf",
       "name": "mua túi",
       "target": 6000000,
-      "createdAt": "2026-05-14T05:18:02.010Z"
+      "createdAt": "2026-05-14T05:18:02.010Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "fdd7bdff-6e7b-4e49-87bd-c3d56462eaf4",
       "name": "mua đồ hello kitty",
       "target": 400000,
-      "createdAt": "2026-05-14T05:17:48.249Z"
+      "createdAt": "2026-05-14T05:17:48.249Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "a247b1ee-2009-43cd-a537-911df5acf91c",
       "name": "mua sách",
       "target": 40000,
-      "createdAt": "2026-05-14T05:17:31.416Z"
+      "createdAt": "2026-05-14T05:17:31.416Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "e3802580-283c-4333-b7a3-83584324d621",
       "name": "mua máy tính mới",
       "target": 5000000,
-      "createdAt": "2026-05-14T02:38:18.842Z"
+      "createdAt": "2026-05-14T02:38:18.842Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "f4bd97c8-b7f1-4a35-8d87-f8a7da1ef862",
       "name": "mua laptop",
       "target": 5900000,
-      "createdAt": "2026-05-14T02:34:06.028Z"
+      "createdAt": "2026-05-14T02:34:06.028Z",
+      "currentAmount": 0
     },
     {
       "userId": "user-1",
       "id": "goal-1",
       "name": "Mua tai nghe mới",
       "target": 2000000,
-      "createdAt": "2026-05-01T08:00:00.000Z"
+      "createdAt": "2026-05-01T08:00:00.000Z",
+      "currentAmount": 0
     }
   ],
   "categories": [
@@ -508,5 +479,126 @@
   "budget": {
     "amount": 1000000,
     "period": "Tuần"
-  }
+  },
+  "notifications": [
+    {
+      "id": "6b2ecd18-cff7-413d-a0fc-1d0b4c4ce9ed",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "type": "budget_overspending",
+      "title": "Cảnh báo vượt ngân sách",
+      "message": "Bạn vừa thêm khoản chi 1.111.111đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 4 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 2.611.111đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "priority": "critical",
+      "read": false,
+      "periodKey": "2026-06",
+      "periodLabel": "Tháng 06/2026",
+      "debtAmount": 2611111,
+      "triggerExpenseAmount": 1111111,
+      "overspendingCount": 4,
+      "expenseId": "da2ce3fd-9caf-4849-b08b-63673c68aa99",
+      "createdAt": "2026-06-10T06:26:47.079Z"
+    },
+    {
+      "id": "c8350921-1381-47b3-b327-24a0153acae9",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "type": "budget_overspending",
+      "title": "Cảnh báo vượt ngân sách",
+      "message": "Bạn vừa thêm khoản chi 100.000đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 3 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 1.500.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "priority": "critical",
+      "read": false,
+      "periodKey": "2026-06",
+      "periodLabel": "Tháng 06/2026",
+      "debtAmount": 1500000,
+      "triggerExpenseAmount": 100000,
+      "overspendingCount": 3,
+      "expenseId": "aea9414a-3aa2-4600-a55e-a1283e551ece",
+      "createdAt": "2026-06-10T06:26:41.207Z"
+    },
+    {
+      "id": "e8fae4f1-b1f2-449a-b989-d8ace70089a6",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "type": "budget_overspending",
+      "title": "Cảnh báo vượt ngân sách",
+      "message": "Bạn vừa thêm khoản chi 1.200.000đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 2 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 1.400.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "priority": "critical",
+      "read": true,
+      "periodKey": "2026-06",
+      "periodLabel": "Tháng 06/2026",
+      "debtAmount": 1400000,
+      "triggerExpenseAmount": 1200000,
+      "overspendingCount": 2,
+      "expenseId": "63abd676-175d-4ecd-ad19-1c9156663267",
+      "createdAt": "2026-06-09T16:28:13.176Z",
+      "readAt": "2026-06-09T16:28:50.502Z"
+    },
+    {
+      "id": "79e78e9c-0708-4cf2-9bb1-c21c703abc20",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "type": "budget_overspending",
+      "title": "Cảnh báo vượt ngân sách",
+      "message": "Bạn vừa thêm khoản chi 1.200.000đ cho \"Chi tiêu Ăn uống\". Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 200.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "priority": "critical",
+      "read": true,
+      "periodKey": "2026-06",
+      "periodLabel": "Tháng 06/2026",
+      "debtAmount": 200000,
+      "triggerExpenseAmount": 1200000,
+      "overspendingCount": 1,
+      "expenseId": "aa172640-5269-46cc-87bd-540ca069ea52",
+      "createdAt": "2026-06-09T16:28:03.786Z",
+      "readAt": "2026-06-09T16:28:50.503Z"
+    }
+  ],
+  "emailOutbox": [
+    {
+      "id": "fb9a5efa-8c00-46c4-a063-278368b98132",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "to": "huy@gmail.com",
+      "subject": "SmartSpend - Cảnh báo vượt ngân sách",
+      "body": "Bạn vừa thêm khoản chi 1.111.111đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 4 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 2.611.111đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "status": "queued_demo",
+      "notificationId": "6b2ecd18-cff7-413d-a0fc-1d0b4c4ce9ed",
+      "createdAt": "2026-06-10T06:26:47.079Z"
+    },
+    {
+      "id": "c445a53b-e74b-475a-91e0-10781efa10df",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "to": "huy@gmail.com",
+      "subject": "SmartSpend - Cảnh báo vượt ngân sách",
+      "body": "Bạn vừa thêm khoản chi 100.000đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 3 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 1.500.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "status": "queued_demo",
+      "notificationId": "c8350921-1381-47b3-b327-24a0153acae9",
+      "createdAt": "2026-06-10T06:26:41.207Z"
+    },
+    {
+      "id": "7cc3639b-e2ff-41f2-9f8e-e7ef3cfbc9c1",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "to": "huy@gmail.com",
+      "subject": "SmartSpend - Cảnh báo vượt ngân sách",
+      "body": "Bạn vừa thêm khoản chi 1.200.000đ cho \"Chi tiêu Ăn uống\". Đây là lần cảnh báo vượt ngân sách thứ 2 trong Tháng 06/2026. Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 1.400.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "status": "queued_demo",
+      "notificationId": "e8fae4f1-b1f2-449a-b989-d8ace70089a6",
+      "createdAt": "2026-06-09T16:28:13.176Z"
+    },
+    {
+      "id": "9c248ce4-8077-4896-b159-3e6b8a8e51c8",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "to": "huy@gmail.com",
+      "subject": "SmartSpend - Cảnh báo vượt ngân sách",
+      "body": "Bạn vừa thêm khoản chi 1.200.000đ cho \"Chi tiêu Ăn uống\". Tổng số tiền vượt ngân sách Tháng 06/2026 hiện tại là 200.000đ. Khoản này sẽ được chuyển sang kỳ tiếp theo và trừ vào ngân sách khả dụng.",
+      "status": "queued_demo",
+      "notificationId": "79e78e9c-0708-4cf2-9bb1-c21c703abc20",
+      "createdAt": "2026-06-09T16:28:03.786Z"
+    }
+  ],
+  "reportExports": [
+    {
+      "id": "71134c89-fb8f-4062-8d19-173092d0359b",
+      "userId": "user-1",
+      "format": "csv",
+      "fileName": "smartspend-report-2026-06-04",
+      "periodKey": "2026-06",
+      "createdAt": "2026-06-04T10:47:13.450Z"
+    }
+  ],
+  "debtCarryovers": []
 }

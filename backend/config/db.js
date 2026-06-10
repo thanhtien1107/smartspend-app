@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 
-async function connectDB() {
-  const mongoUri = process.env.MONGO_URI;
+function hasMysqlPrismaConfig() {
+  return Boolean(process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('mysql://'));
+}
 
-  if (!mongoUri) {
-    console.warn('MONGO_URI is not configured. Server will continue using the current JSON storage until APIs are migrated.');
-    return null;
+async function connectDB() {
+  if (hasMysqlPrismaConfig()) {
+    console.log('Task 4 relational database configured through Prisma/MySQL DATABASE_URL. Prisma will connect when debt carry-over records are saved.');
+  } else {
+    console.warn('MySQL DATABASE_URL is not configured. Task 4 will fall back to MongoDB if MONGO_URI exists, otherwise backend/data/debt-carryover-db.json.');
   }
+
+  const mongoUri = process.env.MONGO_URI;
+  if (!mongoUri) return null;
 
   try {
     mongoose.set('strictQuery', true);
