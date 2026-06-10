@@ -1,0 +1,47 @@
+{
+  "debtCarryovers": [
+    {
+      "id": "9c6083e5-cf6f-48dc-afa2-113f031d38e3",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "budgetId": "",
+      "goalId": "",
+      "debtId": "debt-6e5554f7-a902-4ea9-a694-78747e10345c-2026-06",
+      "periodKey": "2026-06",
+      "period": "2026-06",
+      "periodLabel": "Tháng 06/2026",
+      "periodType": "month",
+      "strategy": "auto_overspending_snapshot",
+      "status": "",
+      "baseBudgetAmount": 1000000,
+      "periodIncome": 0,
+      "periodExpense": 3611111,
+      "grossBudget": 1000000,
+      "availableBudget": 1000000,
+      "surplusAmount": 0,
+      "budgetCarryAmount": 0,
+      "savingGoalContributionAmount": 0,
+      "debtAmount": 2611111,
+      "debtRepaymentAmount": 0,
+      "remainingDebtAmount": 2611111,
+      "budgetAdjustmentAmount": 0,
+      "nextBudgetAmount": 347222,
+      "warning": "",
+      "isLimitedDebtRepayment": false,
+      "createdAt": "2026-06-09T16:28:03.790Z",
+      "updatedAt": "2026-06-10T06:26:47.079Z"
+    }
+  ],
+  "debts": [
+    {
+      "id": "debt-6e5554f7-a902-4ea9-a694-78747e10345c-2026-06",
+      "userId": "6e5554f7-a902-4ea9-a694-78747e10345c",
+      "carryoverRecordId": "9c6083e5-cf6f-48dc-afa2-113f031d38e3",
+      "periodKey": "2026-06",
+      "debtAmount": 2611111,
+      "status": "OPEN",
+      "createdFrom": "debt_carryover",
+      "createdAt": "2026-06-09T16:28:03.790Z",
+      "updatedAt": "2026-06-10T06:26:47.079Z"
+    }
+  ]
+}

@@ -9,6 +9,52 @@ function normalizeEmail(value = "") {
   return String(value).trim().toLowerCase();
 }
 
+function normalizeInviteCode(value = "") {
+  return String(value)
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function findUserByInviteCode(data, inviteCode = "") {
+  const normalizedCode = normalizeInviteCode(inviteCode);
+  if (!normalizedCode) return null;
+  return (
+    (data.users || []).find(
+      (item) => normalizeInviteCode(item.inviteCode) === normalizedCode,
+    ) || null
+  );
+}
+
+function createUniqueInviteCode(data) {
+  let inviteCode = "";
+  do {
+    inviteCode = uuidv4().replace(/-/g, "").slice(0, 8).toUpperCase();
+  } while (findUserByInviteCode(data, inviteCode));
+  return inviteCode;
+}
+
+function ensureUserInviteCode(data, user) {
+  if (!user) return "";
+  const currentCode = normalizeInviteCode(user.inviteCode);
+  const duplicate = currentCode
+    ? (data.users || []).some(
+        (item) =>
+          item !== user &&
+          normalizeInviteCode(item.inviteCode) === currentCode,
+      )
+    : false;
+
+  if (!currentCode || duplicate) {
+    user.inviteCode = createUniqueInviteCode(data);
+  } else if (user.inviteCode !== currentCode) {
+    user.inviteCode = currentCode;
+  }
+
+  user.referralCount = Number(user.referralCount || 0);
+  return user.inviteCode;
+}
+
 function getUserFromToken(req, loadData) {
   const authHeader = req.headers.authorization || "";
   const token = authHeader.startsWith("Bearer ")
@@ -77,6 +123,7 @@ function upsertSocialUser(data, { provider, providerId, name, email, avatar }) {
     user.providerId = stableProviderId;
     user.token = token;
     user.updatedAt = new Date().toISOString();
+    ensureUserInviteCode(data, user);
     return user;
   }
 
@@ -94,6 +141,8 @@ function upsertSocialUser(data, { provider, providerId, name, email, avatar }) {
     providerId: stableProviderId,
     createdAt: new Date().toISOString(),
     token,
+    inviteCode: createUniqueInviteCode(data),
+    referralCount: 0,
   };
   data.users.push(user);
   return user;
@@ -111,17 +160,20 @@ function sanitizeUser(user = {}) {
     wallet: Number(user.wallet || 0),
     createdAt: user.createdAt || "",
     authProvider: user.authProvider || "password",
+    inviteCode: normalizeInviteCode(user.inviteCode),
+    referralCount: Number(user.referralCount || 0),
+    referredByUserId: user.referredByUserId || "",
   };
 }
 
-function findCurrentUser(req, loadData) {
-  const tokenUser = getUserFromToken(req, loadData);
-  const data = loadData();
-  if (tokenUser) {
-    return (data.users || []).find(
-      (item) =>
-        item.id === tokenUser.id || item.username === tokenUser.username,
-    );
+function findCurrentUser(req, loadData, currentData) {
+  const data = currentData || loadData();
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.replace("Bearer ", "").trim()
+    : "";
+  if (token) {
+    return (data.users || []).find((item) => item.token === token) || null;
   }
   const username = req.session?.user?.username;
   if (!username) return null;
@@ -152,7 +204,7 @@ function getLoginRateLimitState(req, username, loginRateLimits) {
 function recordFailedLogin(req, username, loginRateLimits) {
   const { key, state } = getLoginRateLimitState(req, username, loginRateLimits);
   const attempts = Number(state.attempts || 0) + 1;
-  const lockSeconds = attempts >= 5 ? (attempts - 4) * 10 : 0;
+  const lockSeconds = attempts > 5 ? (attempts - 5) * 10 : 0;
   const nextState = {
     attempts,
     lockUntil: lockSeconds > 0 ? Date.now() + lockSeconds * 1000 : 0,
@@ -171,6 +223,10 @@ function clearLoginRateLimit(req, username, loginRateLimits) {
 
 module.exports = {
   normalizeEmail,
+  normalizeInviteCode,
+  findUserByInviteCode,
+  createUniqueInviteCode,
+  ensureUserInviteCode,
   getUserFromToken,
   findUserByLogin,
   findUserByProvider,

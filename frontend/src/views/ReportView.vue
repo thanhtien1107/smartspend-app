@@ -32,7 +32,25 @@
         </button>
       </div>
 
+<<<<<<< HEAD
       <div class="report-kpi-grid">
+=======
+      <div class="report-export-actions">
+        <button type="button" class="primary-btn" :disabled="exporting" @click="exportReport('pdf')">
+          Xuất PDF
+        </button>
+        <button type="button" class="btn-action" :disabled="exporting" @click="exportReport('excel')">
+          Xuất Excel
+        </button>
+        <button type="button" class="btn-action" :disabled="exporting" @click="exportReport('csv')">
+          Xuất CSV
+        </button>
+      </div>
+      <p v-if="exportMessage" class="notification-box" :class="{ 'expense-error': exportError }">
+        {{ exportMessage }}
+      </p>
+
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
       <div class="report-card">
         <strong id="category-top">{{ topCategory.name }}</strong>
         <span>Hạng mục chi tiêu nhiều nhất trong kỳ</span>
@@ -72,6 +90,49 @@
             {{ comparison.spendingDeltaLabel }}
           </strong>
         </div>
+      </div>
+
+      <div class="debt-carryover-box">
+        <h3>Debt Carry-over</h3>
+        <div class="summary-grid report-summary-grid">
+          <div class="card">
+            <span>Ngân sách trước khi trừ nợ</span>
+            <strong>{{ formatMoney(finance.budget_before_debt) }}</strong>
+          </div>
+          <div class="card">
+            <span>Nợ kỳ trước chuyển sang</span>
+            <strong class="amount-expense">{{ formatMoney(finance.debt_carried_from_previous) }}</strong>
+          </div>
+          <div class="card">
+            <span>Ngân sách khả dụng sau nợ</span>
+            <strong>{{ formatMoney(finance.available_budget_after_debt) }}</strong>
+          </div>
+          <div class="card">
+            <span>Nợ chuyển sang kỳ sau</span>
+            <strong class="amount-expense">{{ formatMoney(finance.debt_to_carry_next_period) }}</strong>
+          </div>
+          <div class="card">
+            <span>Tiền dư cuối kỳ</span>
+            <strong class="amount-income">{{ formatMoney(finance.surplus_to_carry_next_period) }}</strong>
+          </div>
+          <div class="card">
+            <span>Budget cộng kỳ sau</span>
+            <strong>{{ formatMoney(finance.budget_carry_to_next_period) }}</strong>
+          </div>
+          <div class="card">
+            <span>Trích vào Saving Goal</span>
+            <strong class="amount-income">{{ formatMoney(finance.saving_goal_contribution_amount) }}</strong>
+          </div>
+        </div>
+        <p v-if="finance.debt_to_carry_next_period > 0">
+          Kỳ sau sẽ bị trừ nợ. Nếu nợ lớn hơn budget, hệ thống chỉ trừ 25% nợ để cảnh báo nhưng không làm mất toàn bộ budget.
+        </p>
+        <p v-else-if="finance.requires_saving_decision">
+          Người dùng đang có saving goal và có tiền dư, cần chọn giữ cho budget kỳ sau, chia vào saving goal, hoặc gửi hết vào saving goal.
+        </p>
+        <p v-else>
+          Hiện không có khoản nợ cần chuyển sang kỳ tiếp theo. Nếu không có saving goal, tiền dư sẽ được cộng vào budget kỳ sau.
+        </p>
       </div>
 
       <div class="report-compare-grid">
@@ -204,16 +265,20 @@ import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from '../stores/useAppStore';
 import { analyzeFinance } from '../utils/financialAnalysis';
+import { downloadFinancialReport } from '../services/report';
 import { INCOME_CATEGORIES } from '../utils/transactionCategories';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 const appStore = useAppStore();
-const { expenses, budgets, categoryBudgets, user } = storeToRefs(appStore);
+const { expenses, budgets, categoryBudgets, goals, user } = storeToRefs(appStore);
 
 const reportMode = ref('month');
 const periodAnchor = ref(new Date());
 const incomeCategorySet = new Set(INCOME_CATEGORIES);
+const exporting = ref(false);
+const exportMessage = ref('');
+const exportError = ref(false);
 
 const periodOptions = [
   { value: 'week', label: 'Tuần' },
@@ -225,7 +290,8 @@ const periodOptions = [
 onMounted(() => Promise.all([
   appStore.fetchExpenses(),
   appStore.fetchBudgets(),
-  appStore.fetchCategoryBudgets()
+  appStore.fetchCategoryBudgets(),
+  appStore.fetchGoals()
 ]));
 
 const currentBudget = computed(() => budgets.value[0] || null);
@@ -233,6 +299,7 @@ const finance = computed(() => analyzeFinance({
   expenses: expenses.value,
   budget: currentBudget.value,
   categoryBudgets: categoryBudgets.value,
+  goals: goals.value,
   wallet: user.value?.wallet || 0
 }));
 
@@ -357,6 +424,26 @@ const barChartDescription = computed(() => {
   if (reportMode.value === 'year') return 'So sánh thu chi giữa các tháng trong năm đang chọn.';
   return 'So sánh thu chi từng ngày trong tháng đang chọn.';
 });
+
+async function exportReport(format) {
+  exporting.value = true;
+  exportMessage.value = '';
+  exportError.value = false;
+  try {
+    await downloadFinancialReport(format);
+    exportMessage.value = format === 'pdf'
+      ? 'Đã tạo file PDF báo cáo.'
+      : format === 'excel'
+        ? 'Đã tạo file Excel báo cáo.'
+        : 'Đã tạo file CSV báo cáo.';
+  } catch (error) {
+    console.error('Export report failed', error);
+    exportError.value = true;
+    exportMessage.value = error?.message || 'Không thể xuất báo cáo.';
+  } finally {
+    exporting.value = false;
+  }
+}
 
 function setReportMode(mode) {
   reportMode.value = mode;

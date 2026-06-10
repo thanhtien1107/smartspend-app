@@ -11,18 +11,18 @@ function createGoalController({
 }) {
   function listGoals(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     res.json(getUserGoals(data, user));
   }
 
   function createGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     const userId = getUserId(user);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    const { name, target } = req.body;
+    const { name, target, currentAmount } = req.body;
     const validationErrors = validateGoalPayload({ name, target });
     if (validationErrors.length) {
       return res.status(400).json({ error: validationErrors[0], errors: validationErrors });
@@ -32,6 +32,7 @@ function createGoalController({
       id: uuidv4(),
       name: String(name).trim(),
       target: Number(target),
+      currentAmount: Math.max(Number(currentAmount || 0), 0),
       createdAt: new Date().toISOString()
     };
     data.goals = data.goals || [];
@@ -42,7 +43,7 @@ function createGoalController({
 
   function updateGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     const { id } = req.params;
     data.goals = data.goals || [];
     const index = data.goals.findIndex((goal) => goal.id === id && hasUserOwner(goal, user));
@@ -63,6 +64,7 @@ function createGoalController({
       ...data.goals[index],
       name: String(merged.name).trim(),
       target: Number(merged.target),
+      currentAmount: Math.max(Number(merged.currentAmount ?? data.goals[index].currentAmount ?? 0), 0),
       updatedAt: new Date().toISOString()
     };
     saveData(data);
@@ -71,7 +73,7 @@ function createGoalController({
 
   function deleteGoal(req, res) {
     const data = loadData();
-    const user = findCurrentUser(req, loadData);
+    const user = findCurrentUser(req, data);
     const { id } = req.params;
     data.goals = data.goals || [];
     const updated = data.goals.filter((goal) => !(goal.id === id && hasUserOwner(goal, user)));

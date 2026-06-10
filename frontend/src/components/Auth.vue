@@ -17,6 +17,7 @@
           </div>
         </div>
 
+<<<<<<< HEAD
         <div class="auth-dashboard-preview" aria-hidden="true">
           <div class="preview-topbar">
             <div>
@@ -62,6 +63,22 @@
         <h2 id="auth-title">{{ isRegister ? 'Tạo tài khoản mới' : authTitle }}</h2>
         <p id="auth-subtitle" class="auth-subtitle">{{ authSubtitle }}</p>
       </div>
+=======
+    <div class="login-panel auth-phone">
+      <button
+        v-if="authView !== 'main'"
+        type="button"
+        id="auth-back"
+        class="auth-back"
+        aria-label="Quay lại"
+        @click="showMainAuth"
+      >
+        ←
+      </button>
+
+      <h2 id="auth-title">{{ isRegister ? 'Chào người dùng mới!' : authTitle }}</h2>
+      <p id="auth-subtitle" class="auth-subtitle">{{ authSubtitle }}</p>
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 
       <div id="auth-main" :class="{ hidden: authView !== 'main' }">
         <form id="login-form" class="auth-view" @submit.prevent="handleSubmit">
@@ -104,6 +121,7 @@
         <p class="login-hint" id="login-hint">{{ isRegister ? 'Đã có tài khoản?' : 'Chưa có tài khoản?' }} <button type="button" id="toggle-register" @click="toggleRegister">{{ isRegister ? 'Đăng nhập ngay' : 'Đăng ký ngay' }}</button></p>
       </div>
 
+<<<<<<< HEAD
 
       <div id="verify-panel" :class="{ hidden: authView !== 'verify' }">
         <form class="auth-view verification-view" @submit.prevent="handleVerifyEmail">
@@ -123,13 +141,32 @@
         </form>
       </div>
     </main>
+=======
+      <div id="reset-panel" :class="{ hidden: authView !== 'forgot' }">
+        <form id="reset-form" class="auth-view" @submit.prevent="handleForgotPassword">
+          <label>
+            <input v-model.trim="forgotEmail" type="email" placeholder="Email" required />
+          </label>
+          <div class="reset-channel-row">
+            <label><input v-model="resetChannel" type="radio" name="reset-channel" value="gmail" /> Gmail</label>
+            <label><input v-model="resetChannel" type="radio" name="reset-channel" value="facebook" /> Facebook</label>
+          </div>
+          <button type="submit" class="primary-btn">Gửi</button>
+        </form>
+      </div>
+    </div>
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
   </div>
 </template>
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+<<<<<<< HEAD
 import { fetchOAuthConfig, login, loginWithGoogleCredential, register, resendEmailOtp, startFacebookLogin, verifyEmailOtp } from '../services/auth.js';
+=======
+import { fetchOAuthConfig, login, loginWithGoogleCredential, register, startFacebookLogin } from '../services/auth.js';
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 import { useAppStore } from '../stores/useAppStore';
 
 const appStore = useAppStore();
@@ -149,12 +186,16 @@ const showRegisterConfirm = ref(false);
 const googleButtonSlot = ref(null);
 const googleReady = ref(false);
 const googleClientId = ref('');
+<<<<<<< HEAD
 const facebookAppId = ref('');
 const oauthConfigLoaded = ref(false);
 const loginCooldownRemaining = ref(0);
 const verificationEmail = ref('');
 const verificationCode = ref('');
 const devVerificationCode = ref('');
+=======
+const loginCooldownRemaining = ref(0);
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 
 let googleInitPromise = null;
 let loginCooldownTimer = null;
@@ -173,7 +214,11 @@ const registerForm = reactive({
   confirmPassword: ''
 });
 
+<<<<<<< HEAD
 const authTitle = computed(() => authView.value === 'verify' ? 'Xác minh email' : (authView.value === 'forgot' ? 'Quên Mật Khẩu?' : 'Chào mừng trở lại!'));
+=======
+const authTitle = computed(() => (authView.value === 'forgot' ? 'Quên Mật Khẩu?' : 'Chào mừng trở lại!'));
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 const authSubtitle = computed(() => {
   if (authView.value === 'verify') return `Nhập mã OTP 6 số đã gửi đến ${verificationEmail.value}`;
   if (isRegister.value) return 'Chào mừng bạn đến với ứng dụng';
@@ -292,6 +337,7 @@ async function handleSubmit() {
   }
 }
 
+<<<<<<< HEAD
 async function handleVerifyEmail() {
   loading.value = true;
   setMessage('', 'info');
@@ -329,6 +375,8 @@ async function handleResendOtp() {
   }
 }
 
+=======
+>>>>>>> a135e40b5284221842f47107669608b3db4871bc
 function handleForgotPassword() {
   console.log('Forgot password requested', {
     email: forgotEmail.value,

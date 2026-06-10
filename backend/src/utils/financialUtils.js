@@ -149,8 +149,41 @@ function sumExpenseAmounts(expenses) {
   );
 }
 
-function getEffectiveBudgetAmount(baseBudgetAmount, monthlyIncome) {
-  return Number(baseBudgetAmount || 0) + Number(monthlyIncome || 0);
+function getEffectiveBudgetAmount(baseBudgetAmount) {
+  return Number(baseBudgetAmount || 0);
+}
+
+function getBudgetPeriodContext(period, today) {
+  const normalized = normalizeVietnameseKey(period);
+  if (normalized.includes("tuan") || normalized === "week") {
+    const start = getWeekStart(today);
+    return {
+      key: "week",
+      label: "tuần này",
+      start,
+      totalDays: 7,
+      elapsedDays: Math.max(Math.floor((today - start) / DAY_MS) + 1, 1),
+    };
+  }
+  if (normalized.includes("nam") || normalized === "year") {
+    const start = new Date(today.getFullYear(), 0, 1);
+    const end = new Date(today.getFullYear(), 11, 31);
+    return {
+      key: "year",
+      label: "năm nay",
+      start,
+      totalDays: Math.floor((end - start) / DAY_MS) + 1,
+      elapsedDays: Math.max(Math.floor((today - start) / DAY_MS) + 1, 1),
+    };
+  }
+  const start = new Date(today.getFullYear(), today.getMonth(), 1);
+  return {
+    key: "month",
+    label: "tháng này",
+    start,
+    totalDays: new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate(),
+    elapsedDays: Math.max(today.getDate(), 1),
+  };
 }
 
 function getBudgetLevel(usage) {
@@ -498,6 +531,84 @@ function buildFinancialInsightMessages(context) {
   return insights;
 }
 
+function buildQuantifiedAdvice(context) {
+  const {
+    periodLabel,
+    periodSpending,
+    periodIncome,
+    budgetAmount,
+    budgetUsage,
+    projectedSpending,
+    topCategory,
+    topCategoryShare,
+    remainingPeriodDays,
+    dailySpendingLimit,
+    cashShortfall,
+    walletConfigured,
+  } = context;
+  const findings = [];
+  const actions = [];
+
+  if (cashShortfall > 0) {
+    findings.push(
+      `Chi tiêu ${periodLabel} đang cao hơn số tiền ghi nhận được ${formatVnd(cashShortfall)}.`,
+    );
+    actions.push(
+      walletConfigured
+        ? `Tạm dừng chi không thiết yếu cho đến khi bù được phần thiếu ${formatVnd(cashShortfall)}.`
+        : `Cập nhật số dư ví hiện có; nếu số dư thực là 0đ, bạn đang thiếu ${formatVnd(cashShortfall)} so với các khoản đã chi.`,
+    );
+  }
+
+  if (topCategory && topCategoryShare >= 40) {
+    const suggestedCut = Math.max(
+      Math.round(topCategory[1] * (topCategoryShare >= 70 ? 0.25 : 0.15)),
+      0,
+    );
+    findings.push(
+      `${topCategory[0]} chiếm ${topCategoryShare}% tổng chi ${periodLabel} (${formatVnd(topCategory[1])}), mức tập trung quá cao.`,
+    );
+    actions.push(
+      `Giảm ít nhất ${formatVnd(suggestedCut)} ở ${topCategory[0]} trong kỳ tiếp theo và đặt hạn mức riêng ${formatVnd(Math.max(topCategory[1] - suggestedCut, 0))}.`,
+    );
+  }
+
+  if (budgetAmount > 0 && projectedSpending > budgetAmount) {
+    const projectedOver = projectedSpending - budgetAmount;
+    findings.push(
+      `Theo tốc độ hiện tại, chi tiêu có thể đạt ${formatVnd(projectedSpending)}, vượt ngân sách ${formatVnd(projectedOver)}.`,
+    );
+    actions.push(
+      remainingPeriodDays > 0
+        ? `Trong ${remainingPeriodDays} ngày còn lại, giữ tổng chi không quá ${formatVnd(dailySpendingLimit)} mỗi ngày.`
+        : "Không phát sinh thêm khoản chi không thiết yếu trong phần còn lại của kỳ.",
+    );
+  } else if (budgetAmount > 0) {
+    actions.push(
+      remainingPeriodDays > 0
+        ? `Để không vượt ngân sách, giới hạn chi tiêu ${remainingPeriodDays} ngày còn lại ở mức ${formatVnd(dailySpendingLimit)} mỗi ngày.`
+        : `Bạn đã dùng ${budgetUsage}% ngân sách ${periodLabel}; rà soát lại trước khi bắt đầu kỳ mới.`,
+    );
+  }
+
+  if (periodIncome > 0 && periodSpending > periodIncome) {
+    const ratio = Math.round((periodSpending / periodIncome) * 100);
+    findings.push(
+      `Chi tiêu bằng ${ratio}% thu nhập ghi nhận trong ${periodLabel}; dòng tiền đang âm ${formatVnd(periodSpending - periodIncome)}.`,
+    );
+  } else if (periodIncome === 0 && periodSpending > 0) {
+    findings.push(
+      `Chưa có khoản thu nào được ghi nhận trong ${periodLabel}, nên chưa thể xác nhận khả năng chi trả an toàn.`,
+    );
+    actions.push("Ghi nhận đầy đủ thu nhập và số dư đầu kỳ để điểm sức khỏe phản ánh chính xác hơn.");
+  }
+
+  return {
+    findings: [...new Set(findings)].slice(0, 5),
+    actions: [...new Set(actions)].slice(0, 5),
+  };
+}
+
 function buildInsight(data, currentUser = null) {
   const normalizedTransactions = (data.expenses || [])
     .map(normalizeExpense)
@@ -509,6 +620,7 @@ function buildInsight(data, currentUser = null) {
   const today = startOfDay(new Date());
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
   const weekStart = getWeekStart(today);
+  const budgetPeriod = getBudgetPeriodContext(budget.period, today);
   const daysInMonth = new Date(
     today.getFullYear(),
     today.getMonth() + 1,
@@ -534,6 +646,14 @@ function buildInsight(data, currentUser = null) {
   const dailyIncomes = normalizedIncomes.filter((income) =>
     sameDay(income.dateObject, today),
   );
+  const periodExpenses = normalizedExpenses.filter(
+    (expense) =>
+      expense.dateObject >= budgetPeriod.start && expense.dateObject <= today,
+  );
+  const periodIncomes = normalizedIncomes.filter(
+    (income) =>
+      income.dateObject >= budgetPeriod.start && income.dateObject <= today,
+  );
   const totalExpense = sumExpenseAmounts(normalizedExpenses);
   const totalIncome = sumExpenseAmounts(normalizedIncomes);
   const monthlySpending = sumExpenseAmounts(monthlyExpenses);
@@ -542,38 +662,45 @@ function buildInsight(data, currentUser = null) {
   const monthlyIncome = sumExpenseAmounts(monthlyIncomes);
   const weeklyIncome = sumExpenseAmounts(weeklyIncomes);
   const totalDailyIncome = sumExpenseAmounts(dailyIncomes);
-  const averageDailySpending = monthlySpending / daysElapsed;
+  const periodSpending = sumExpenseAmounts(periodExpenses);
+  const periodIncome = sumExpenseAmounts(periodIncomes);
+  const averageDailySpending =
+    periodSpending / Math.max(budgetPeriod.elapsedDays, 1);
   const baseBudgetAmount = Number(budget.amount || 0);
-  const budgetAmount = getEffectiveBudgetAmount(
-    baseBudgetAmount,
-    monthlyIncome,
-  );
+  const budgetAmount = getEffectiveBudgetAmount(baseBudgetAmount);
   const budgetUsage =
-    budgetAmount > 0 ? Math.round((monthlySpending / budgetAmount) * 100) : 0;
+    budgetAmount > 0 ? Math.round((periodSpending / budgetAmount) * 100) : 0;
   const budgetLevel = getBudgetLevel(budgetUsage);
-  const categoryTotals = getCategoryTotals(monthlyExpenses);
+  const categoryTotals = getCategoryTotals(periodExpenses);
   const topCategory = Object.entries(categoryTotals).sort(
     (a, b) => b[1] - a[1],
   )[0];
-  const categoryBudgets = buildCategoryBudgetSummary(data, monthlyExpenses);
-  const dailySeries = buildDailySeries(monthlyExpenses, monthStart, today);
+  const categoryBudgets = buildCategoryBudgetSummary(data, periodExpenses);
+  const dailySeries = buildDailySeries(
+    periodExpenses,
+    budgetPeriod.start,
+    today,
+  );
   const continuousIncreaseDays = getTrailingIncreaseDays(dailySeries);
   const abnormalDays = dailySeries.filter(
     (item) =>
       averageDailySpending > 0 && item.amount > averageDailySpending * 1.3,
   );
   const repeatedSmallTransactions =
-    detectRepeatedSmallTransactions(monthlyExpenses);
-  const nightSpending = detectNightSpending(monthlyExpenses);
-  const categorySpikes = detectCategorySpikes(monthlyExpenses, today);
-  const monthlySpendingForecast = Math.round(
-    averageDailySpending * daysInMonth,
+    detectRepeatedSmallTransactions(periodExpenses);
+  const nightSpending = detectNightSpending(periodExpenses);
+  const categorySpikes = detectCategorySpikes(periodExpenses, today);
+  const periodSpendingForecast = Math.round(
+    averageDailySpending * budgetPeriod.totalDays,
   );
   const activeUserWallet = Number(currentUser?.wallet || 0);
-  const remainingBalance = Math.max(
-    activeUserWallet + monthlyIncome - monthlySpending,
-    0,
+  const walletConfigured = Object.prototype.hasOwnProperty.call(
+    currentUser || {},
+    "wallet",
   );
+  const rawRemainingBalance = activeUserWallet + periodIncome - periodSpending;
+  const remainingBalance = Math.max(rawRemainingBalance, 0);
+  const cashShortfall = Math.max(-rawRemainingBalance, 0);
   const netCashFlow = monthlyIncome - monthlySpending;
   const predictedDaysRemaining =
     averageDailySpending > 0
@@ -586,20 +713,44 @@ function buildInsight(data, currentUser = null) {
         (continuousIncreaseDays >= 3 ? 15 : 0) +
         (abnormalDays.length ? 10 : 0) +
         (categorySpikes.length ? 10 : 0) +
-        (budgetAmount > 0 && monthlySpendingForecast > budgetAmount ? 15 : 0),
+        (budgetAmount > 0 && periodSpendingForecast > budgetAmount ? 20 : 0) +
+        (cashShortfall > 0 ? 25 : 0),
     ),
   );
+  const topCategoryShare =
+    topCategory && periodSpending > 0
+      ? Math.round((topCategory[1] / periodSpending) * 100)
+      : 0;
+  const scoreBreakdown = [];
   let financialHealthScore = 100;
-  if (budgetUsage > 100) financialHealthScore -= 35;
-  else if (budgetUsage > 90) financialHealthScore -= 25;
-  else if (budgetUsage >= 70) financialHealthScore -= 12;
-  if (continuousIncreaseDays >= 3) financialHealthScore -= 10;
-  financialHealthScore -= Math.min(abnormalDays.length * 4, 12);
-  financialHealthScore -= Math.min(repeatedSmallTransactions.length * 4, 10);
-  if (nightSpending.length >= 2) financialHealthScore -= 8;
-  financialHealthScore -= Math.min(categorySpikes.length * 6, 12);
-  if (averageDailySpending > 0 && remainingBalance / averageDailySpending <= 7)
-    financialHealthScore -= 15;
+  function deductScore(points, reason) {
+    if (points <= 0) return;
+    financialHealthScore -= points;
+    scoreBreakdown.push({ points: -points, reason });
+  }
+  if (budgetUsage > 100) deductScore(35, "Đã vượt ngân sách");
+  else if (budgetUsage > 90) deductScore(25, "Ngân sách gần cạn");
+  else if (budgetUsage >= 70) deductScore(12, "Đã dùng trên 70% ngân sách");
+  if (cashShortfall > 0)
+    deductScore(30, `Thiếu ${formatVnd(cashShortfall)} theo dữ liệu đã ghi nhận`);
+  if (periodIncome > 0 && periodSpending > periodIncome)
+    deductScore(15, "Chi tiêu cao hơn thu nhập trong kỳ");
+  else if (periodIncome === 0 && periodSpending > 0)
+    deductScore(10, "Chưa ghi nhận thu nhập trong kỳ");
+  if (topCategoryShare >= 70)
+    deductScore(15, `Chi tiêu tập trung ${topCategoryShare}% vào một hạng mục`);
+  else if (topCategoryShare >= 50)
+    deductScore(8, `Chi tiêu tập trung ${topCategoryShare}% vào một hạng mục`);
+  if (budgetAmount > 0 && periodSpendingForecast > budgetAmount)
+    deductScore(15, "Tốc độ chi dự kiến vượt ngân sách");
+  if (continuousIncreaseDays >= 3) deductScore(10, "Chi tiêu tăng liên tục");
+  deductScore(Math.min(abnormalDays.length * 4, 12), "Có ngày chi tiêu bất thường");
+  deductScore(
+    Math.min(repeatedSmallTransactions.length * 4, 10),
+    "Nhiều giao dịch nhỏ lặp lại",
+  );
+  if (nightSpending.length >= 2) deductScore(8, "Nhiều giao dịch ban đêm");
+  deductScore(Math.min(categorySpikes.length * 6, 12), "Hạng mục chi tăng đột biến");
   financialHealthScore = Math.max(
     0,
     Math.min(Math.round(financialHealthScore), 100),
@@ -618,10 +769,18 @@ function buildInsight(data, currentUser = null) {
             overspendingProbability >= 50
           ? "medium"
           : "low";
+  const overallStatus =
+    riskLevel === "critical"
+      ? "Cần hành động ngay"
+      : riskLevel === "high"
+        ? "Rủi ro cao"
+        : riskLevel === "medium"
+          ? "Cần theo dõi"
+          : budgetLevel.status;
   const alerts = buildFinancialAlerts({
     budgetLevel,
     budgetUsage,
-    monthlySpending,
+    monthlySpending: periodSpending,
     budgetAmount,
     categoryBudgets,
     continuousIncreaseDays,
@@ -633,7 +792,7 @@ function buildInsight(data, currentUser = null) {
   });
   const recommendations = buildFinancialRecommendations({
     topCategory,
-    monthlySpending,
+    monthlySpending: periodSpending,
     budgetAmount,
     budgetUsage,
     budgetLevel,
@@ -649,19 +808,60 @@ function buildInsight(data, currentUser = null) {
     repeatedSmallTransactions,
     nightSpending,
     categorySpikes,
-    monthlySpendingForecast,
+    monthlySpendingForecast: periodSpendingForecast,
     budgetAmount,
   });
+  const remainingPeriodDays = Math.max(
+    budgetPeriod.totalDays - budgetPeriod.elapsedDays,
+    0,
+  );
+  const remainingBudget = Math.max(budgetAmount - periodSpending, 0);
+  const spendableRemaining = Math.min(remainingBudget, remainingBalance);
+  const dailySpendingLimit =
+    remainingPeriodDays > 0
+      ? Math.floor(spendableRemaining / remainingPeriodDays)
+      : 0;
+  const quantifiedAdvice = buildQuantifiedAdvice({
+    periodLabel: budgetPeriod.label,
+    periodSpending,
+    periodIncome,
+    budgetAmount,
+    budgetUsage,
+    projectedSpending: periodSpendingForecast,
+    topCategory,
+    topCategoryShare,
+    remainingPeriodDays,
+    dailySpendingLimit,
+    cashShortfall,
+    walletConfigured,
+  });
+  const detailedRecommendations = [
+    ...quantifiedAdvice.actions,
+    ...recommendations,
+  ].filter((item, index, items) => items.indexOf(item) === index).slice(0, 6);
+  const detailedInsights = [
+    ...quantifiedAdvice.findings,
+    ...insights,
+  ].filter((item, index, items) => items.indexOf(item) === index).slice(0, 6);
   const projection = getMonthProjection(normalizedExpenses);
   const patterns = identifySpendingPatterns(normalizedExpenses);
 
   const insight = {
-    status: budgetLevel.status,
+    status: overallStatus,
     budget_level: budgetLevel.key,
     budget_usage: budgetUsage,
     budget_amount: budgetAmount,
     base_budget_amount: baseBudgetAmount,
+    budget_period: budgetPeriod.key,
+    budget_period_label: budgetPeriod.label,
+    period_spending: Math.round(periodSpending),
+    period_income: Math.round(periodIncome),
+    remaining_budget: Math.round(remainingBudget),
+    remaining_period_days: remainingPeriodDays,
+    daily_spending_limit: Math.round(dailySpendingLimit),
     remaining_balance: Math.round(remainingBalance),
+    cash_shortfall: Math.round(cashShortfall),
+    wallet_configured: walletConfigured,
     total_expense: Math.round(totalExpense),
     total_income: Math.round(totalIncome),
     total_daily_income: Math.round(totalDailyIncome),
@@ -673,14 +873,18 @@ function buildInsight(data, currentUser = null) {
     monthly_spending: Math.round(monthlySpending),
     average_daily_spending: Math.round(averageDailySpending),
     predicted_days_remaining: predictedDaysRemaining,
-    monthly_spending_forecast: monthlySpendingForecast,
+    monthly_spending_forecast: periodSpendingForecast,
+    projected_period_spending: periodSpendingForecast,
     overspending_probability: overspendingProbability,
     burn_rate_trend: continuousIncreaseDays >= 3 ? "accelerating" : "stable",
     risk_level: riskLevel,
     financial_health_score: financialHealthScore,
+    score_breakdown: scoreBreakdown,
     alerts,
-    recommendations,
-    insights,
+    recommendations: detailedRecommendations,
+    action_plan: detailedRecommendations,
+    insights: detailedInsights,
+    key_findings: detailedInsights,
     category_budget_summaries: categoryBudgets,
     category_totals: categoryTotals,
     daily_series: dailySeries,
@@ -692,7 +896,7 @@ function buildInsight(data, currentUser = null) {
     budgetUsed: budgetUsage / 100,
     alert: alerts[0]?.message || "",
     categoryBudgets,
-    personalizedRecommendations: recommendations,
+    personalizedRecommendations: detailedRecommendations,
     futurePrediction: projection
       ? {
           projectedTotal: projection.projectedTotal,

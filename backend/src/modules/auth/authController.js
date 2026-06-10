@@ -1,8 +1,13 @@
 const { v4: uuidv4 } = require("uuid");
 const {
   normalizeEmail,
+  normalizeInviteCode,
   findUserByLogin,
+  findUserByProvider,
+  findUserByInviteCode,
   upsertSocialUser,
+  createUniqueInviteCode,
+  ensureUserInviteCode,
   sanitizeUser,
   getLoginRateLimitState,
   recordFailedLogin,
@@ -54,6 +59,24 @@ function createAuthController(dependencies) {
     return res.redirect(url.toString());
   }
 
+  function resolveInviter(data, inviteCode) {
+    const normalizedCode = normalizeInviteCode(inviteCode);
+    if (!normalizedCode) return { inviter: null, inviteCode: "" };
+    return {
+      inviter: findUserByInviteCode(data, normalizedCode),
+      inviteCode: normalizedCode,
+    };
+  }
+
+  function applyReferral(inviter, user) {
+    if (!inviter || !user || inviter.id === user.id || user.referredByUserId) {
+      return;
+    }
+    user.referredByUserId = inviter.id;
+    user.referredByInviteCode = inviter.inviteCode;
+    inviter.referralCount = Number(inviter.referralCount || 0) + 1;
+  }
+
   return {
     login(req, res) {
       const { username, password } = req.body;
@@ -85,13 +108,14 @@ function createAuthController(dependencies) {
       clearLoginRateLimit(req, username, loginRateLimits);
       const token = uuidv4();
       user.token = token;
+      ensureUserInviteCode(data, user);
       saveData(data);
       req.session.user = sanitizeUser(user);
       res.json({ authenticated: true, user: sanitizeUser(user), token });
     },
 
     socialLogin(req, res) {
-      const { provider, providerId, name, email, avatar } = req.body;
+      const { provider, providerId, name, email, avatar, inviteCode } = req.body;
       const normalizedProvider = String(provider || "")
         .trim()
         .toLowerCase();
@@ -108,6 +132,18 @@ function createAuthController(dependencies) {
       }
 
       const data = loadData();
+      const existingUser = findUserByProvider(
+        data,
+        normalizedProvider,
+        providerId,
+        normalizedEmail,
+      );
+      const referral = existingUser
+        ? { inviter: null, inviteCode: "" }
+        : resolveInviter(data, inviteCode);
+      if (referral.inviteCode && !referral.inviter) {
+        return res.status(400).json({ error: "Mã mời không hợp lệ." });
+      }
       const user = upsertSocialUser(data, {
         provider: normalizedProvider,
         providerId,
@@ -115,6 +151,7 @@ function createAuthController(dependencies) {
         email: normalizedEmail,
         avatar,
       });
+      if (!existingUser) applyReferral(referral.inviter, user);
       saveData(data);
       req.session.user = sanitizeUser(user);
       res.json({
@@ -125,7 +162,7 @@ function createAuthController(dependencies) {
     },
 
     async socialLoginGoogle(req, res) {
-      const { credential } = req.body;
+      const { credential, inviteCode } = req.body;
       if (
         !hasConfiguredKey(
           GOOGLE_CLIENT_ID,
@@ -166,6 +203,18 @@ function createAuthController(dependencies) {
         }
 
         const data = loadData();
+        const existingUser = findUserByProvider(
+          data,
+          "google",
+          profile.sub,
+          profile.email,
+        );
+        const referral = existingUser
+          ? { inviter: null, inviteCode: "" }
+          : resolveInviter(data, inviteCode);
+        if (referral.inviteCode && !referral.inviter) {
+          return res.status(400).json({ error: "Mã mời không hợp lệ." });
+        }
         const user = upsertSocialUser(data, {
           provider: "google",
           providerId: profile.sub,
@@ -173,6 +222,7 @@ function createAuthController(dependencies) {
           email: profile.email,
           avatar: profile.picture || "assets/logo/app-logo.svg",
         });
+        if (!existingUser) applyReferral(referral.inviter, user);
         saveData(data);
         req.session.user = sanitizeUser(user);
         res.json({
@@ -200,8 +250,12 @@ function createAuthController(dependencies) {
           );
       }
       const state = uuidv4();
+      const inviteCode = normalizeInviteCode(req.query.invite);
       req.session.facebookOAuthState = state;
-      facebookOAuthStates.set(state, { createdAt: Date.now() });
+      facebookOAuthStates.set(state, {
+        createdAt: Date.now(),
+        inviteCode,
+      });
       const redirectUri = `${getRequestBaseUrl(req)}/api/auth/facebook/callback`;
       const params = new URLSearchParams({
         client_id: FACEBOOK_APP_ID,
@@ -227,6 +281,7 @@ function createAuthController(dependencies) {
           );
       }
       const state = String(req.query.state || "");
+      const oauthState = facebookOAuthStates.get(state);
       const hasValidState = Boolean(
         state &&
         (facebookOAuthStates.has(state) ||
@@ -276,6 +331,20 @@ function createAuthController(dependencies) {
         }
 
         const data = loadData();
+        const existingUser = findUserByProvider(
+          data,
+          "facebook",
+          profile.id,
+          profile.email,
+        );
+        const referral = existingUser
+          ? { inviter: null, inviteCode: "" }
+          : resolveInviter(data, oauthState?.inviteCode);
+        if (referral.inviteCode && !referral.inviter) {
+          return redirectToFacebookLoginResult(res, {
+            error: "Ma moi khong hop le.",
+          });
+        }
         const user = upsertSocialUser(data, {
           provider: "facebook",
           providerId: profile.id,
@@ -283,6 +352,7 @@ function createAuthController(dependencies) {
           email: profile.email,
           avatar: profile.picture?.data?.url || "assets/images/female.png",
         });
+        if (!existingUser) applyReferral(referral.inviter, user);
         saveData(data);
         req.session.user = sanitizeUser(user);
         delete req.session.facebookOAuthState;
@@ -300,8 +370,16 @@ function createAuthController(dependencies) {
     },
 
     register(req, res) {
-      const { username, password, fullName, email, wallet, avatar, birthday } =
-        req.body;
+      const {
+        username,
+        password,
+        fullName,
+        email,
+        wallet,
+        avatar,
+        birthday,
+        inviteCode,
+      } = req.body;
       const data = loadData();
       const normalizedEmail = normalizeEmail(email || username);
       const normalizedUsername = normalizeEmail(username || email);
@@ -320,6 +398,10 @@ function createAuthController(dependencies) {
       if (existing) {
         return res.status(409).json({ error: "Email này đã có tài khoản." });
       }
+      const referral = resolveInviter(data, inviteCode);
+      if (referral.inviteCode && !referral.inviter) {
+        return res.status(400).json({ error: "Mã mời không hợp lệ." });
+      }
       const user = {
         id: uuidv4(),
         username: normalizedUsername,
@@ -332,7 +414,10 @@ function createAuthController(dependencies) {
         wallet: Number(wallet || 0),
         createdAt: new Date().toISOString(),
         token: uuidv4(),
+        inviteCode: createUniqueInviteCode(data),
+        referralCount: 0,
       };
+      applyReferral(referral.inviter, user);
       data.users.push(user);
       saveData(data);
       req.session.user = sanitizeUser(user);
@@ -462,8 +547,10 @@ function createAuthController(dependencies) {
 
     session(req, res) {
       const data = loadData();
-      const user = findCurrentUser(req, loadData);
+      const user = findCurrentUser(req, loadData, data);
       if (user) {
+        ensureUserInviteCode(data, user);
+        saveData(data);
         return res.json({ authenticated: true, user: sanitizeUser(user) });
       }
       res.json({ authenticated: false });
@@ -471,41 +558,128 @@ function createAuthController(dependencies) {
 
     profileGet(req, res) {
       const data = loadData();
-      const user = findCurrentUser(req, loadData);
+      const user = findCurrentUser(req, loadData, data);
       if (!user) {
         return res
           .status(404)
           .json({ error: "Không tìm thấy hồ sơ người dùng." });
       }
+      ensureUserInviteCode(data, user);
+      saveData(data);
       res.json(sanitizeUser(user));
     },
 
     profilePut(req, res) {
       const data = loadData();
-      const user = findCurrentUser(req, loadData);
+      const user = findCurrentUser(req, loadData, data);
       if (!user) {
         return res
           .status(404)
           .json({ error: "Không tìm thấy hồ sơ người dùng." });
       }
 
+      const body = req.body || {};
+      const fullName = String(body.fullName ?? user.fullName ?? "").trim();
+      const email = normalizeEmail(body.email ?? user.email ?? "");
+      const birthday = String(body.birthday ?? user.birthday ?? "").slice(
+        0,
+        10,
+      );
+      const rawPhone = String(body.phone ?? user.phone ?? "").trim();
+      const phone = rawPhone
+        .replace(/[^\d+]/g, "")
+        .trim();
+
+      if (!fullName) {
+        return res.status(400).json({ error: "Họ và tên không được để trống." });
+      }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Email không hợp lệ." });
+      }
+      const duplicateEmail = (data.users || []).find(
+        (item) =>
+          item !== user &&
+          email &&
+          (normalizeEmail(item.email) === email ||
+            normalizeEmail(item.username) === email),
+      );
+      if (duplicateEmail) {
+        return res.status(409).json({ error: "Email này đã được sử dụng." });
+      }
+      if (
+        rawPhone &&
+        (/[A-Za-z]/.test(rawPhone) || !/^\+?\d{9,15}$/.test(phone))
+      ) {
+        return res.status(400).json({
+          error: "Số điện thoại phải có từ 9 đến 15 chữ số.",
+        });
+      }
+      if (birthday) {
+        const birthdayDate = new Date(`${birthday}T00:00:00`);
+        if (
+          Number.isNaN(birthdayDate.getTime()) ||
+          birthdayDate > new Date()
+        ) {
+          return res.status(400).json({ error: "Ngày sinh không hợp lệ." });
+        }
+      }
+
       const allowedFields = [
-        "fullName",
-        "email",
-        "birthday",
-        "phone",
         "avatar",
         "wallet",
       ];
       allowedFields.forEach((field) => {
-        if (Object.prototype.hasOwnProperty.call(req.body, field)) {
+        if (Object.prototype.hasOwnProperty.call(body, field)) {
           user[field] =
-            field === "wallet" ? Number(req.body[field] || 0) : req.body[field];
+            field === "wallet" ? Number(body[field] || 0) : body[field];
         }
       });
+      user.fullName = fullName;
+      user.email = email;
+      user.birthday = birthday;
+      user.phone = phone;
+      user.updatedAt = new Date().toISOString();
+      ensureUserInviteCode(data, user);
       saveData(data);
       req.session.user = sanitizeUser(user);
       res.json({ success: true, user: sanitizeUser(user) });
+    },
+
+    changePassword(req, res) {
+      const data = loadData();
+      const user = findCurrentUser(req, loadData, data);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: "Không tìm thấy hồ sơ người dùng." });
+      }
+      if (user.authProvider && user.authProvider !== "password") {
+        return res.status(400).json({
+          error: "Tài khoản mạng xã hội không sử dụng mật khẩu SmartSpend.",
+        });
+      }
+
+      const body = req.body || {};
+      const currentPassword = String(body.currentPassword || "");
+      const newPassword = String(body.newPassword || "");
+      if (!currentPassword || currentPassword !== String(user.password || "")) {
+        return res.status(400).json({ error: "Mật khẩu hiện tại không đúng." });
+      }
+      if (newPassword.length < 6) {
+        return res
+          .status(400)
+          .json({ error: "Mật khẩu mới phải có ít nhất 6 ký tự." });
+      }
+      if (newPassword === currentPassword) {
+        return res.status(400).json({
+          error: "Mật khẩu mới phải khác mật khẩu hiện tại.",
+        });
+      }
+
+      user.password = newPassword;
+      user.updatedAt = new Date().toISOString();
+      saveData(data);
+      res.json({ success: true, message: "Đổi mật khẩu thành công." });
     },
 
     oauthConfig(req, res) {

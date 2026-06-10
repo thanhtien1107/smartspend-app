@@ -1,0 +1,53 @@
+-- SmartSpend Week 8 - Task 4 Debt Carry-over relational database script
+-- This script follows the ERD relationship: USER owns BUDGET, GOAL, DEBT and NOTIFICATION.
+-- Main Task 4 tables: DEBT and DEBT_CARRYOVER_RECORD.
+-- Run on MySQL 8+ after the base USER, BUDGET and GOAL tables exist.
+
+CREATE TABLE IF NOT EXISTS `DEBT` (
+  `id` VARCHAR(191) NOT NULL,
+  `userId` VARCHAR(191) NOT NULL,
+  `debtAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'OPEN',
+  `periodKey` VARCHAR(50) NOT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `DEBT_userId_periodKey_key` (`userId`, `periodKey`),
+  KEY `DEBT_userId_status_idx` (`userId`, `status`),
+  KEY `DEBT_periodKey_idx` (`periodKey`),
+  CONSTRAINT `DEBT_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `USER`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `DEBT_CARRYOVER_RECORD` (
+  `id` VARCHAR(191) NOT NULL,
+  `userId` VARCHAR(191) NOT NULL,
+  `budgetId` VARCHAR(191) NULL,
+  `goalId` VARCHAR(191) NULL,
+  `debtId` VARCHAR(191) NULL,
+  `period` VARCHAR(50) NOT NULL,
+  `baseBudgetAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `periodIncome` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `periodExpense` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `surplusAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `debtAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `debtRepaymentAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `remainingDebtAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `budgetAdjustmentAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `savingGoalContributionAmount` DECIMAL(14,2) NOT NULL DEFAULT 0,
+  `strategy` VARCHAR(100) NOT NULL,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'OPEN',
+  `warningMessage` TEXT NULL,
+  `isLimitedDebtRepayment` BOOLEAN NOT NULL DEFAULT false,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `DEBT_CARRYOVER_RECORD_userId_period_key` (`userId`, `period`),
+  KEY `DEBT_CARRYOVER_RECORD_userId_createdAt_idx` (`userId`, `createdAt`),
+  KEY `DEBT_CARRYOVER_RECORD_budgetId_idx` (`budgetId`),
+  KEY `DEBT_CARRYOVER_RECORD_goalId_idx` (`goalId`),
+  KEY `DEBT_CARRYOVER_RECORD_debtId_idx` (`debtId`),
+  CONSTRAINT `DEBT_CARRYOVER_RECORD_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `USER`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `DEBT_CARRYOVER_RECORD_budgetId_fkey` FOREIGN KEY (`budgetId`) REFERENCES `BUDGET`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `DEBT_CARRYOVER_RECORD_goalId_fkey` FOREIGN KEY (`goalId`) REFERENCES `GOAL`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `DEBT_CARRYOVER_RECORD_debtId_fkey` FOREIGN KEY (`debtId`) REFERENCES `DEBT`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
