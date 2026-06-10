@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Week 8 Task 4 follows the relationship-table ERD, so the main relational target is MySQL.
+  // Example: mysql://root:password@127.0.0.1:3306/smartspend
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum BudgetPeriod {
+  WEEK
+  MONTH
+  YEAR
+}
+
+enum ResetChannel {
+  GMAIL
+  FACEBOOK
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
+
+enum NotificationType {
+  BUDGET_OVERSPENDING
+  DEBT_CARRYOVER
+  SYSTEM
+}
+
+enum ReportFormat {
+  PDF
+  EXCEL
+  CSV
+}
+
+model User {
+  id           String    @id @default(cuid()) @db.VarChar(191)
+  email        String    @unique @db.VarChar(191)
+  username     String    @unique @db.VarChar(191)
+  passwordHash String    @db.VarChar(255)
+  fullName     String    @db.VarChar(191)
+  birthday     DateTime?
+  gender       Gender?
+  phone        String?   @db.VarChar(50)
+  avatar       String?   @db.VarChar(500)
+  wallet       Decimal   @default(0) @db.Decimal(14, 2)
+  sessionToken String?   @unique @db.VarChar(191)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  expenses             Expense[]
+  categories           Category[]
+  budget               Budget?
+  categoryBudgets      CategoryBudget[]
+  goals                Goal[]
+  passwordResets       PasswordReset[]
+  notifications        Notification[]
+  debts                Debt[]
+  debtCarryoverRecords DebtCarryoverRecord[]
+  reportExports        ReportExport[]
+
+  @@index([email])
+  @@index([sessionToken])
+  @@map("USER")
+}
+
+model Category {
+  id        String   @id @default(cuid()) @db.VarChar(191)
+  userId    String   @db.VarChar(191)
+  name      String   @db.VarChar(191)
+  icon      String?  @db.VarChar(100)
+  color     String?  @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expenses        Expense[]
+  categoryBudgets CategoryBudget[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("CATEGORY")
+}
+
+model Expense {
+  id         String          @id @default(cuid()) @db.VarChar(191)
+  userId     String          @db.VarChar(191)
+  categoryId String?         @db.VarChar(191)
+  type       TransactionType @default(EXPENSE)
+  title      String          @db.VarChar(191)
+  amount     Decimal         @db.Decimal(14, 2)
+  date       DateTime        @default(now())
+  time       String?         @db.VarChar(20)
+  note       String?         @db.Text
+  location   String?         @db.VarChar(255)
+  friends    String?         @db.Text
+  imageUrl   String?         @db.VarChar(500)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([userId, date])
+  @@index([categoryId])
+  @@map("EXPENSE")
+}
+
+model Budget {
+  id              String       @id @default(cuid()) @db.VarChar(191)
+  userId          String       @unique @db.VarChar(191)
+  amount          Decimal      @db.Decimal(14, 2)
+  period          BudgetPeriod @default(MONTH)
+  remainingAmount Decimal?     @db.Decimal(14, 2)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debtCarryoverRecords DebtCarryoverRecord[]
+
+  @@map("BUDGET")
+}
+
+model CategoryBudget {
+  id         String       @id @default(cuid()) @db.VarChar(191)
+  userId     String       @db.VarChar(191)
+  categoryId String       @db.VarChar(191)
+  amount     Decimal      @db.Decimal(14, 2)
+  period     BudgetPeriod @default(MONTH)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId])
+  @@index([categoryId])
+  @@map("CATEGORY_BUDGET")
+}
+
+model Goal {
+  id        String   @id @default(cuid()) @db.VarChar(191)
+  userId    String   @db.VarChar(191)
+  name      String   @db.VarChar(191)
+  target    Decimal  @db.Decimal(14, 2)
+  saved     Decimal  @default(0) @db.Decimal(14, 2)
+  deadline  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debtCarryoverRecords DebtCarryoverRecord[]
+
+  @@index([userId])
+  @@map("GOAL")
+}
+
+model PasswordReset {
+  id         String       @id @default(cuid()) @db.VarChar(191)
+  userId     String       @db.VarChar(191)
+  email      String       @db.VarChar(191)
+  channel    ResetChannel @default(GMAIL)
+  codeHash   String       @db.VarChar(255)
+  resetToken String?      @unique @db.VarChar(191)
+  verified   Boolean      @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([expiresAt])
+  @@map("PASSWORD_RESET")
+}
+
+model Debt {
+  id        String   @id @default(cuid()) @db.VarChar(191)
+  userId    String   @db.VarChar(191)
+  debtAmount Decimal  @default(0) @db.Decimal(14, 2)
+  status    String   @default("OPEN") @db.VarChar(50)
+  periodKey String   @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debtCarryoverRecords DebtCarryoverRecord[]
+
+  @@unique([userId, periodKey])
+  @@index([userId, status])
+  @@index([periodKey])
+  @@map("DEBT")
+}
+
+model DebtCarryoverRecord {
+  id                             String   @id @default(cuid()) @db.VarChar(191)
+  userId                         String   @db.VarChar(191)
+  budgetId                       String?  @db.VarChar(191)
+  goalId                         String?  @db.VarChar(191)
+  debtId                         String?  @db.VarChar(191)
+  period                         String   @db.VarChar(50)
+  baseBudgetAmount               Decimal  @default(0) @db.Decimal(14, 2)
+  periodIncome                   Decimal  @default(0) @db.Decimal(14, 2)
+  periodExpense                  Decimal  @default(0) @db.Decimal(14, 2)
+  surplusAmount                  Decimal  @default(0) @db.Decimal(14, 2)
+  debtAmount                     Decimal  @default(0) @db.Decimal(14, 2)
+  debtRepaymentAmount            Decimal  @default(0) @db.Decimal(14, 2)
+  remainingDebtAmount            Decimal  @default(0) @db.Decimal(14, 2)
+  budgetAdjustmentAmount         Decimal  @default(0) @db.Decimal(14, 2)
+  savingGoalContributionAmount   Decimal  @default(0) @db.Decimal(14, 2)
+  strategy                       String   @db.VarChar(100)
+  status                         String   @default("OPEN") @db.VarChar(50)
+  warningMessage                 String?  @db.Text
+  isLimitedDebtRepayment         Boolean  @default(false)
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budget Budget? @relation(fields: [budgetId], references: [id], onDelete: SetNull)
+  goal   Goal?   @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  debt   Debt?   @relation(fields: [debtId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, period])
+  @@index([userId, createdAt])
+  @@index([budgetId])
+  @@index([goalId])
+  @@index([debtId])
+  @@map("DEBT_CARRYOVER_RECORD")
+}
+
+model Notification {
+  id         String           @id @default(cuid()) @db.VarChar(191)
+  userId     String           @db.VarChar(191)
+  type       NotificationType @default(SYSTEM)
+  title      String           @db.VarChar(191)
+  message    String           @db.Text
+  priority   String           @default("medium") @db.VarChar(50)
+  read       Boolean          @default(false)
+  periodKey  String?          @db.VarChar(50)
+  debtAmount Decimal?         @db.Decimal(14, 2)
+  createdAt  DateTime         @default(now())
+  readAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read, createdAt])
+  @@index([periodKey])
+  @@map("NOTIFICATION")
+}
+
+model ReportExport {
+  id        String       @id @default(cuid()) @db.VarChar(191)
+  userId    String       @db.VarChar(191)
+  format    ReportFormat
+  fileName  String       @db.VarChar(255)
+  periodKey String?      @db.VarChar(50)
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([periodKey])
+  @@map("REPORT_EXPORT")
+}
